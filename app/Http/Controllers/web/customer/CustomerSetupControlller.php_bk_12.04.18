@@ -1,0 +1,227 @@
+<?php
+
+namespace App\Http\Controllers\web\customer;
+
+use App\Http\Controllers\Controller;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use App\Models\Sentinel\User;
+use App\Models\Customer;
+use Illuminate\Http\Request;
+use Session;
+use DB;
+use Input;
+use Response;
+use Validator;
+use View;
+use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Mail;
+use GuzzleHttp\Client;
+
+//use PHPMailer\PHPMailer\PHPMailer;
+//use PHPMailer\PHPMailer\Exception;
+
+
+//use Request;
+
+class CustomerSetupControlller extends Controller
+{
+    protected $mail;
+
+    public function __construct()
+    {
+        $this->customer = new Customer();
+
+    }
+
+
+    public function form(Request $request, $customerId, $id = false)
+    {
+        $input = Input::all();
+
+        $title = 'Novamed-Customer Setup';
+
+
+//        select customer
+
+        $customer = DB::table('tbl_customer')->pluck('customer_name', 'id');
+        $customer->prepend('Please Choose Customer', '');
+
+//        select cal Specifications
+        $calSpecifications = DB::table('tbl_cal_specification')->select('cal_specification', 'id')->get();
+
+//        for choose cal frequency
+        $calFrequency = DB::table('tbl_frequency')->select('*')->get();
+
+//        for choose labeling
+
+        $selectLabeling = DB::table('tbl_labeling')->select('*')->get();
+
+
+//        for choose Shipping
+
+        $selectShipping = DB::table('tbl_shipping')->select('*')->get();
+
+//        for chooseing servicePlan
+
+        $servicePlanSelect = DB::table('tbl_service_plan')->select('*')->get();
+
+//        select pay methods
+
+        $selectPayMethods = DB::table('tbl_pay_method')->select('*')->get();
+
+
+        $data = [
+            'id' => $id,
+            'testPlanName' => isset($input['testPlanName']) ? $input['testPlanName'] : '',
+            'testPlanUnit' => isset($input['testPlanUnit']) ? $input['testPlanUnit'] : '',
+            'testPlanDescription' => isset($input['testPlanDescription']) ? $input['testPlanDescription'] : '',
+            'testPlanEquipmentModel' => isset($input['testPlanEquipmentModel']) ? $input['testPlanEquipmentModel'] : '',
+            'is_active' => isset($input['is_active']) ? $input['is_active'] : '',
+            'test_Tolerences' => array(),
+            'model_id' => '',
+            'model_name' => '',
+        ];
+//        print_r($data);die;
+
+        if ($id) {
+            $getplan = $this->testplan->getTest($data['id']);
+
+            $data['id'] = $getplan->testPlanId;
+            $data['model_id'] = $getplan->model_id;
+            $data['testPlanName'] = $getplan->name;
+            $data['testPlanDescription'] = $getplan->description;
+            $data['testPlanUnit'] = $getplan->unit;
+            $data['is_active'] = $getplan->is_active;
+            $data['test_Tolerences'] = $this->testplan->getTestTolerences($id);
+            $data['model_name'] = $getplan->model_name;
+
+
+//                  echo'<pre>';  print_r($data);die;
+
+        }
+        $requiredFields = [
+            'customerCompanyName' => isset($input['customerCompanyName']) ? $input['customerCompanyName'] : '',
+            'customerCompanyType' => isset($input['customerCompanyType']) ? $input['customerCompanyType'] : ''
+
+        ];
+
+        $rules = [
+            'customerCompanyName' => 'required',
+            'customerCompanyType' => 'required'
+        ];
+        $error = array();
+        $checkStatus = false;
+        if ($request->isMethod('post')) {
+            $checkValid = Validator::make($requiredFields, $rules);
+
+            if ($checkValid->fails()) {
+                $checkStatus = true;
+                $error = $checkValid->errors()->all();
+            }
+        } elseif ($request->isMethod('get')) {
+            $checkStatus = true;
+        }
+
+        $select = array('c.id', 'c.customer_name', 't.name', 'c.customer_type_id', 'c.customer_email','c.customer_main_telephone','address1','c.state', 'c.city', 'c.customer_email');
+        $customerdetails = $this->customer->AllCustomer('', '', 'c.id', 'DESC', array('select' => $select, 'customerId' => $customerId), false);
+
+        if ($checkStatus) {
+
+            return view('customer.customerSetup')->with('input', $data)->with('customerdetails', $customerdetails)->with('customer', $customer)->with('selectPayMethods', $selectPayMethods)->with('selectShipping', $selectShipping)->with('selectServicePlan', $servicePlanSelect)
+                ->with('title', $title)->with('calFrequency', $calFrequency)->with('selectLabeling', $selectLabeling)->with('customerId',$customerId)->with('calSpecification', $calSpecifications)->with('errors', $error);
+        } else {
+            $post = Input::all();
+
+
+        }
+    }
+
+    function limittolerence()
+    {
+        $input = Input::all();
+//       echo'<pre>'; print_r($input);die;
+        $modelId = $input['modelId'];
+        if ($modelId) {
+            $tolerences = $this->testplan->getLimitTolerences($modelId);
+            $view = View::make('testplan.testplanTolerenceAjax', ['data' => $tolerences]);
+            $formData = $view->render();
+            die(json_encode(array("result" => true, "formData" => trim($formData))));
+
+        }
+    }
+
+    public function addCustomerSetup()
+    {
+        $input = Input::all();
+
+//        $input['id'] = isset($input['Id']) ? $input['Id'] : false;
+        $input['id'] = isset($input['Id']) ? $input['Id'] : false;
+//        echo '<pre>';print_r($input['Id']);die;
+
+        if (!$input) {
+            die(json_encode(array('result' => true, 'message' => 'Values are not get Properly')));
+        }
+
+        $exactDate = str_replace('/', '-', $input['exactDate']);
+
+        if ($input['labeling']) {
+
+            $param = array();
+            foreach ($input['labeling'] as $value) {
+                $param[] = $value;
+            }
+            $lebeling = implode(',', $param);
+        }
+
+        if ($input['servicePlan']) {
+
+            $servies = array();
+            foreach ($input['servicePlan'] as $servicevalue) {
+                $servies[] = $servicevalue;
+            }
+            $serviePlan = implode(',', $servies);
+        }
+
+        $saveSetup['id'] = false;
+        $saveSetup['customer_id'] = $input['customerName'];
+//        $saveSetup['pay_method'] = $input['payMethod'];
+//        $saveSetup['pay_terms'] = $input['paymentTerms'];
+        $saveSetup['cal_spec'] = $input['calSpecification'];
+        if ($input['calSpecification'] == 3) {
+            $saveSetup['spec_comments'] = $input['specComments'];
+        }
+
+        $saveSetup['cal_frequnecy'] = $input['calFrequency'];
+        $saveSetup['exact_date'] = date('Y-m-d', strtotime($exactDate));
+        $saveSetup['asset_label'] = $lebeling;
+//        $saveSetup['shipping'] = $input['shipValue'];
+//        $saveSetup['ship_comments'] = $input['shippingComment'];
+        $saveSetup['plan_id'] = $serviePlan;
+
+        $saveSetups = $this->customer->saveCustomerSetup($saveSetup);
+
+
+        $message = Session::flash('message', 'Customer Setup has been created');
+        die(json_encode(array("result" => true, "msg" => $message)));
+
+
+    }
+
+    public function getCustomer()
+    {
+        $input = Input::all();
+        if (!$input) {
+            die(json_encode(array('result' => true, 'message' => 'Values are not get Properly')));
+        }
+        $customerId = $input['customerId'];
+        $getCustomer = $this->customer->getCustomer($customerId, true);
+
+        if (!$getCustomer) {
+            die(json_encode(array('result' => true, 'message' => 'Customer Not found')));
+        } else {
+            die(json_encode(array('result' => true, 'data' => $getCustomer, 'message' => 'Customer Details Found')));
+        }
+
+    }
+}

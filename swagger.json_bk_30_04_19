@@ -1,0 +1,4671 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Novamed API",
+        "description": "Novamed  REST API",
+        "termsOfService": "http://54.188.82.17",
+        "version": "0.1"
+    },
+    "host": "54.188.82.17/novamed//api",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+      "/role": {
+        "post": {
+          "tags": [
+            "Role and Permission"
+          ],
+          "summary": "role",
+          "operationId": "role",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/role"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "schema": {
+                "$ref": "#/definitions/Success"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          }
+        }
+      },
+      "/permission": {
+        "post": {
+          "tags": [
+            "Role and Permission"
+          ],
+          "summary": "Permission",
+          "operationId": "permission",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/role"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "schema": {
+                "$ref": "#/definitions/Success"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          }
+        }
+      },
+      "/assign-role": {
+        "post": {
+          "tags": [
+            "Role and Permission"
+          ],
+          "summary": "Assign role",
+          "operationId": "assignRole",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/assignRole"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "schema": {
+                "$ref": "#/definitions/Success"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          }
+        }
+      },
+      "/attach-permission": {
+        "post": {
+          "tags": [
+            "Role and Permission"
+          ],
+          "summary": "Attach permission",
+          "operationId": "attachPermission",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/attachPermission"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "schema": {
+                "$ref": "#/definitions/Success"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
+          }
+        }
+      },
+
+      "/auth/userCreation": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "New user creation",
+          "description": "New user creation",
+          "operationId": "new",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/userCreation"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/getuser": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Get user",
+          "description": "Get user",
+          "operationId": "new",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/getuser"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/getusertechnician": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Get user Technician",
+          "description": "Get user Technician",
+          "operationId": "new",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/getuser"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/auth/changepassworduser": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Change password for user",
+          "description": "Change password for user",
+          "operationId": "new",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/changepassworduser"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/auth/login": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Customer login",
+          "description": "Customer login",
+          "operationId": "login",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/login"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/auth/logout": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User logout",
+          "description": "User logout",
+          "operationId": "logout",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/changePassword": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Change Password",
+          "description": "Change Password",
+          "operationId": "change password",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/changePassword"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/changePassword"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/userDetail": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User Detail",
+          "description": "User Detail",
+          "operationId": "User Detail",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/changePassword"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/refreshtoken": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Refresh token",
+          "description": "Send the expired token to get the new token",
+          "operationId": "Refresh token",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/changePassword"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/userList": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User lists",
+          "description": "User lists",
+          "operationId": "User lists",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/userList"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/userList"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/auth/technicianlogin": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Technician login",
+          "description": "Technician login",
+          "operationId": "login",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/login"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/userDetailTechnician": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "User Detail Technician",
+          "description": "User Detail Technician",
+          "operationId": "User Detail Technician",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/edittechnician": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Edit technician",
+          "description": "Edit technician",
+          "operationId": "new",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/edittechnician"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/servicePlans": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Service plans",
+          "description": "Give the token and get the service plans for the customer",
+          "operationId": "Service plans",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/frequency": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Frequency",
+          "description": "Give the token and get the frequency for the customer",
+          "operationId": "Service plans",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/manufacturers": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Manufacturers",
+          "description": "Give the token and get the manufacturers for the customer",
+          "operationId": "Manufacturers",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/brands": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Brands",
+          "description": "Give the token and get the manufacturer_id for the brand",
+          "operationId": "Brands",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/brands"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+
+
+      "/equipmentmodel": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Equipment model",
+          "description": "Give the token and get the equipmentmodel for the customer",
+          "operationId": "Equipment model",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/equipmentmodel"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/calfoundstatus": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Cal and found status",
+          "description": "Give the token and get the status for the equipments",
+          "operationId": "Cal and found status",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/pricingcreteria": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Pricing creteria",
+          "description": "Give the token and get the model for the instruments",
+          "operationId": "Pricing creteria",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/pricingcreteria"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/shippingbillingmaster": {
+        "post": {
+          "tags": [
+            "User configurations"
+          ],
+          "summary": "Shipping/Billing",
+          "description": "Give the token and and key for key 1 is shipping and 2 is billing",
+          "operationId": "Shipping/Billing",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/shippingbillingmaster"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/setupmasters": {
+        "get": {
+          "tags": [
+            "Settings"
+          ],
+          "summary": "Setup masters",
+          "description": "Setup masters",
+          "operationId": "Setup masters",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+
+      "/setups": {
+        "get": {
+          "tags": [
+            "Settings"
+          ],
+          "summary": "View Customer Setups",
+          "description": "View Customer Setups",
+          "operationId": "View Customer Setups",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/editsetups": {
+        "post": {
+          "tags": [
+            "Settings"
+          ],
+          "summary": "Edit Customer Setups",
+          "description": "Edit Customer Setups",
+          "operationId": "Edit Customer Setups",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/editsetups"
+              }
+
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessOTP"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ErrorOTP"
+              }
+            }
+          }
+        }
+      },
+
+      "/users": {
+        "get": {
+          "tags": [
+            "Check Role"
+          ],
+          "summary": "Check Role",
+          "description": "Check Role",
+          "operationId": "Check Role",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/equipment/createEquipment": {
+        "post": {
+          "tags": [
+            "Equipments"
+          ],
+          "summary": "Create/Edit Equipment",
+          "description": "Create/Edit Equipment",
+          "operationId": "Create/Edit Equipment",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/createEquipment"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+
+      "/equipment/allEquipments": {
+        "post": {
+          "tags": [
+            "Equipments"
+          ],
+          "summary": "All Equipments",
+          "description": "All Equipments",
+          "operationId": "login",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/allEquipments"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/equipment/allEquipmentsCount": {
+        "post": {
+          "tags": [
+            "Equipments"
+          ],
+          "summary": "All Equipments Count",
+          "description": "All Equipments Count",
+          "operationId": "All Equipments Count",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/allEquipments"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/equipment/equipmentDetail": {
+        "post": {
+          "tags": [
+            "Equipments"
+          ],
+          "summary": "Equipment Detail",
+          "description": "Equipment Detail",
+          "operationId": "Equipment Detail",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/equipmentDetail"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/equipment/dueEquipments": {
+        "post": {
+          "tags": [
+            "Equipments"
+          ],
+          "summary": "Due equipments",
+
+          "operationId": "Due equipments",
+          "description": "For filters flag 1 for overdue and 2 for upcoming",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/dueEquipments"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/equipment/viewAlldueEquipments": {
+        "post": {
+          "tags": [
+            "Equipments"
+          ],
+          "summary": "View All Due equipments",
+
+          "operationId": "Due equipments",
+          "description": "",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/viewAlldueEquipments"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/servicerequest/pricingCriteria": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "Pricing criteria",
+          "description": "Request with parameters to get the pricing cr",
+          "operationId": "Add service request",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/pricingCriteria"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/servicerequest/addServiceRequest": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "Add service request",
+          "description": "Add service request",
+          "operationId": "Add service request",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/addServiceRequest"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/servicerequest/serviceRequestCounts": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "Service request counts",
+          "description": "Service request counts",
+          "operationId": "Service request counts",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/serviceRequestLists"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+
+      "/servicerequest/serviceRequestDashboardCounts": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "Service request dashboard counts",
+          "description": "Service request dashboard counts",
+          "operationId": "Service request dashboard counts",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/servicerequest/serviceRequestLists": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "Service request lists",
+          "description": "Service request lists",
+          "operationId": "Service request lists",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/serviceRequestLists"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/servicerequest/serviceRequestSummary": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "Service request Summary",
+          "description": "Service request Summary",
+          "operationId": "Service request Summary",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/serviceRequestSummary"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/servicerequest/viewpdf": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "View pdf",
+          "description": "View pdf",
+          "operationId": "View pdf",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/viewpdf"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/servicerequest/viewconsolidatepdf": {
+        "post": {
+          "tags": [
+            "Service Request"
+          ],
+          "summary": "View consolidate pdf",
+          "description": "View consolidate pdf",
+          "operationId": "View consolidate pdf",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/viewconsolidatepdf"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/getCompanyTypes": {
+        "get": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Get company types",
+          "description": "Get company types",
+          "operationId": "Get company types",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/companyProfile": {
+        "get": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Get company profile",
+          "description": "Get company profile",
+          "operationId": "Get company profile",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/companyProfile"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/editcompanyProfile": {
+        "post": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Edit company profile",
+          "description": "Edit company profile",
+          "operationId": "Edit company profile",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/editcompanyProfile"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/editcontact": {
+        "post": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Edit Contact",
+          "description": "Edit Contact",
+          "operationId": "Edit Contact",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/editcontact"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/shippingbilling": {
+        "post": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Add/Edit Billing Or Shipping",
+          "description": "Add/Edit Billing Or Shipping",
+          "operationId": "Add/Edit Billing Or Shipping",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/shippingbilling"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/getshippingbilling": {
+        "post": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Get Billing Or Shipping",
+          "description": "Get Billing Or Shipping",
+          "operationId": "Get Billing Or Shipping",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/getshippingbilling"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/company/getallshippingbilling": {
+        "post": {
+          "tags": [
+            "Company"
+          ],
+          "summary": "Get All Billing Or Shipping",
+          "description": "Get All Billing Or Shipping",
+          "operationId": "Get All Billing Or Shipping",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/getallshippingbilling"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/dashboard/dashboardCounts": {
+        "get": {
+          "tags": [
+            "Dashboard"
+          ],
+          "summary": "Dashboard Counts",
+          "description": "Dashboard Counts",
+          "operationId": "Dashboard Counts",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body"
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/dashboard/dashboardDueLists": {
+        "post": {
+          "tags": [
+            "Dashboard"
+          ],
+          "summary": "Due lists",
+          "description": "Due lists",
+          "operationId": "Due lists",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/dashboardDueLists"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/payment/createpurchaseorder": {
+        "post": {
+          "tags": [
+            "Payment Management"
+          ],
+          "summary": "New purchase order creation",
+          "description": "New purchase order creation",
+          "operationId": "New purchase order creation",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/createpurchaseorder"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/payment/purchaseorderlists": {
+        "post": {
+          "tags": [
+            "Payment Management"
+          ],
+          "summary": "Purchase order lists",
+          "description": "Purchase order lists",
+          "operationId": "Purchase order lists",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/purchaseorderlists"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/payment/paymentwithoutorder": {
+        "post": {
+          "tags": [
+            "Payment Management"
+          ],
+          "summary": "Payment without order",
+          "description": "Payment without order",
+          "operationId": "Payment without order",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/paymentwithoutorder"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/payment/paymentwithinvoice": {
+        "post": {
+          "tags": [
+            "Payment Management"
+          ],
+          "summary": "Payment with invoice",
+          "description": "Payment with invoice",
+          "operationId": "Payment with invoice",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/paymentwithinvoice"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/payment/paymentlists": {
+        "post": {
+          "tags": [
+            "Payment Management"
+          ],
+          "summary": "Payment lists",
+          "description": "Payment lists",
+          "operationId": "Payment lists",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/paymentlists"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/payment/paymentapicall": {
+        "post": {
+          "tags": [
+            "Payment Management"
+          ],
+          "summary": "Payment api call",
+          "description": "Payment api call",
+          "operationId": "Payment api call",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/paymentapicall"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/techdashboard/techniciandashboard": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Dashboard",
+          "description": "Dashboard",
+          "operationId": "Dashboard",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/techdashboard"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/techdashboard/startworkorder": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Start Workorder",
+          "description": "Dashboard",
+          "operationId": "Dashboard",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/startworkorder"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/techdashboard/workorderdetail": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Workorder detail",
+          "description": "Workorder detail",
+          "operationId": "Workorder detail",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/workorderdetail"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/techdashboard/workorderinstrumentdetail": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Workorder instrument detail",
+          "description": "Workorder instrument detail",
+          "operationId": "Workorder instrument detail",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/workorderdetail"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/techdashboard/instrumentinfo": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Instrument Info",
+          "description": "Instrument Info",
+          "operationId": "Instrument Info",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/instrumentinfo"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/tech/partslist": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Parts",
+          "description": "Parts",
+          "operationId": "Parts",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/partslist"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/tech/workorderitemdetails": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Workorder item detail for maintenance",
+          "description": "Workorder item detail",
+          "operationId": "Workorder item detail",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/workorderitemdetails"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/tech/workorderitemdetailsasfound": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Workorder item detail for asfound",
+          "description": "Workorder item detail for asfound",
+          "operationId": "Workorder item detail for asfound",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/workorderitemdetails"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/tech/workorderitemdetailsascalibrated": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Workorder item detail for ascalibrated",
+          "description": "Workorder item detail for ascalibrated",
+          "operationId": "Workorder item detail for ascalibrated",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/workorderitemdetails"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/testpoint/testpointcalculation": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Testpoints Calculation",
+          "description": "Dashboard",
+          "operationId": "Dashboard",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/testpointcalculation"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+
+      "/techdashboard/ongoingworkorder": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Ongoing Workorder",
+          "description": "Dashboard",
+          "operationId": "Dashboard",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/ongoingworkorder"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/techdashboard/reports": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Reports",
+          "description": "In the parameter status 1 for as found 2 for maintenance 3 for calibration and 4 for dispatch",
+          "operationId": "Reports",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/reports"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/techdashboard/consolidateReport": {
+        "post": {
+          "tags": [
+            "Technician"
+          ],
+          "summary": "Consolidate Report",
+          "description": "In the parameter give the workorder id",
+          "operationId": "Reports",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/consolidateReport"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/statusupdate/savemaintenance": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Save Maintenance",
+          "description": "Save Maintenance",
+          "operationId": "Save Maintenance",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/savemaintenance"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/statusupdate/saveasfound": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Save As Found",
+          "description": "Save As Found",
+          "operationId": "Save As Found",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/saveasfound"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/statusupdate/saveascalibrated": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Save As Calibrated",
+          "description": "Save As Calibrated",
+          "operationId": "Save As Calibrated",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/saveasfound"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/statusupdate/saveasdespatched": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Save As Despatched",
+          "description": "Save As Despatched",
+          "operationId": "Save As Despatched",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/saveasdespatched"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/statusmove/workordermove": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Update & move",
+          "description": "In the field 'work_order_status',need which module you move 1 for as found,2 for maintenance,3 for calibration and 4 for despatched",
+          "operationId": "Update & move",
+
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/updateandmove"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/instrumentmove/workorderitemmove": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Move instrument",
+          "description": "In the field 'work_order_status',need which module you move 1 for as found,2 for maintenance,3 for calibration and 4 for despatched",
+          "operationId": "Move instrument",
+
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/moveinstrument"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/complete/completeworkorder": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Complete Workorder",
+          "description": "In the field 'work_order_id',need to give the work order id",
+          "operationId": "Complete Workorder",
+
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/completeworkorder"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+
+
+      "/instruments/viewhistory": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "View History",
+          "description": "View History",
+          "operationId": "View History",
+
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/viewhistory"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+
+      "/despatch/downloadpdf": {
+        "post": {
+          "tags": [
+            "Workorder status updation"
+          ],
+          "summary": "Download pdf",
+          "description": "Download pdf",
+          "operationId": "Download pdf",
+
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/downloadpdf"
+              }
+            },
+            {
+              "name": "token",
+              "in": "header",
+              "required": true,
+              "type": "apiKey"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/proxylogin": {
+        "post": {
+          "tags": [
+            "Proxy Login"
+          ],
+          "summary": "Proxy Login",
+          "description": "Proxy Login",
+          "operationId": "Proxy Login",
+
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "required": true,
+
+              "schema": {
+                "$ref": "#/definitions/proxylogin"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      }
+
+    },
+
+
+    "definitions": {
+      "User": {
+        "title": "User",
+        "required": [
+
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+
+          "name":{
+            "type":"string"
+          },
+          "email":{
+            "type":"string"
+          },
+
+          "password": {
+            "type": "string"
+          }
+
+        }
+      },
+
+      "profile": {
+        "title": "Profile",
+        "required": [
+
+          "token"
+        ],
+        "properties": {
+
+          "token":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "allEquipments": {
+        "title": "All equipments",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          },
+          "status":{
+            "type":"integer"
+          },
+          "startCallDate":{
+            "type":"string"
+          },
+          "endCallDate":{
+            "type":"string"
+          }
+        }
+      },
+
+      "role": {
+        "title": "role",
+        "required": [
+
+          "name"
+        ],
+        "properties": {
+
+          "name":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "assignRole": {
+        "title": "Assign role",
+        "required": [
+
+          "email",
+          "role"
+        ],
+        "properties": {
+
+
+          "email":{
+            "type":"string"
+          },
+
+          "role": {
+            "type": "string"
+          }
+
+        }
+      },
+
+      "attachPermission": {
+        "title": "Attach permission",
+        "required": [
+
+          "role",
+          "name"
+        ],
+        "properties": {
+
+
+          "role":{
+            "type":"string"
+          },
+
+          "name": {
+            "type": "string"
+          }
+
+        }
+      },
+
+      "changePassword": {
+        "title": "Change Password",
+        "required": [
+
+          "currentPassword",
+          "newPassword",
+          "confirmPassword"
+        ],
+
+        "properties": {
+
+          "currentPassword":{
+            "type":"string"
+          },
+          "newPassword":{
+            "type":"string"
+          },
+          "confirmPassword":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "equipmentDetail": {
+        "title": "Equipment Detail",
+        "required": [
+
+          "equipment_id"
+        ],
+        "properties": {
+
+
+          "equipment_id":{
+            "type":"integer"
+          }
+
+        }
+      },
+
+      "dueEquipments": {
+        "title": "Due equipments",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          },
+          "status":{
+            "type":"integer"
+          },
+          "startCallDate":{
+            "type":"string"
+          },
+          "endCallDate":{
+            "type":"string"
+          },
+          "monthYear":{
+            "type":"string"
+          }
+        }
+      },
+
+      "viewAlldueEquipments": {
+        "title": "Due equipments",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          },
+          "status":{
+            "type":"integer"
+          },
+          "startCallDate":{
+            "type":"string"
+          },
+          "endCallDate":{
+            "type":"string"
+          },
+          "monthYear":{
+            "type":"string"
+          }
+        }
+      },
+
+      "pricingCriteria": {
+        "title": "Pricing criteria",
+        "required": [
+
+          "equipment_id",
+          "plan_id"
+        ],
+
+        "properties": {
+
+          "equipment_id":{
+            "type":"integer"
+          },
+          "plan_id":{
+            "type":"integer"
+          }
+
+        }
+      },
+
+      "addServiceRequest": {
+        "title": "Add service request",
+
+        "properties": {
+
+          "shipDate":{
+            "type":"string"
+          },
+          "requestItems":{
+
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/requestItems"
+            }
+          },
+          "billing_address_id":{
+            "type":"integer"
+          },
+          "shipping_address_id":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "serviceRequestLists": {
+        "title": "Service Request Lists",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          },
+          "status":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "requestItems": {
+        "type": "object",
+        "properties": {
+          "dueEquipmentId": {
+            "type": "integer"
+          },
+          "servicePlanId": {
+            "type": "integer"
+          },
+          "frequency": {
+            "type": "integer"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "servicePriceId": {
+            "type": "integer"
+          },
+          "frequencyDate": {
+            "type": "string"
+          }
+        }
+      },
+
+      "serviceRequestSummary": {
+        "title": "Service request summary",
+        "required": [
+
+          "service_request_id"
+        ],
+
+        "properties": {
+
+          "service_request_id":{
+            "type":"integer"
+          },
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          },
+          "status":{
+            "type":"integer"
+          },
+          "startCallDate":{
+            "type":"string"
+          },
+          "endCallDate":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "companyProfile": {
+        "title": "Company profile",
+
+        "properties": {
+        }
+      },
+
+      "dashboardDueLists": {
+        "title": "Dashboard due lists",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          }
+
+        }
+      },
+
+      "userCreation": {
+        "title": "User Creation",
+        "required": [
+
+          "name",
+          "email",
+          "role"
+        ],
+
+        "properties": {
+          "id":{
+            "type":"integer"
+          },
+
+          "name":{
+            "type":"string"
+          },
+          "role":{
+            "type":"integer"
+          },
+          "email":{
+            "type":"string"
+          },
+          "address1":{
+            "type":"string"
+          },
+          "address2":{
+            "type":"string"
+          },
+          "city":{
+            "type":"string"
+          },
+          "state":{
+            "type":"string"
+          },
+          "zipcode":{
+            "type":"string"
+          },
+          "password":{
+            "type":"string"
+          },
+          "telephone":{
+            "type":"string"
+          },
+          "location":{
+            "type":"string"
+          },
+          "photo":{
+            "type":"string"
+          },
+          "signature":{
+            "type":"string"
+          }
+
+        }
+      },
+
+
+      "edittechnician": {
+        "title": "Edit technician",
+        "required": [
+
+          "first_name",
+          "last_name",
+          "phone_number"
+        ],
+
+        "properties": {
+          "id":{
+            "type":"integer"
+          },
+
+          "first_name":{
+            "type":"string"
+          },
+          "last_name":{
+            "type":"string"
+          },
+          "phone_number":{
+            "type":"string"
+          },
+          "address":{
+            "type":"string"
+          },
+          "city":{
+            "type":"string"
+          },
+          "state":{
+            "type":"string"
+          },
+          "zip_code":{
+            "type":"string"
+          },
+          "photo":{
+            "type":"string"
+          },
+          "signature":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "techdashboard": {
+        "title": "Technician Dashboard",
+
+        "properties": {
+
+          "week_or_month":{
+            "type":"integer"
+          },
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "userList": {
+        "title": "User List",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          }
+        }
+      },
+
+      "changepassworduser": {
+        "title": "Change password",
+
+        "properties": {
+          "id":{
+            "type":"integer"
+          },
+
+          "newpassword":{
+            "type":"string"
+          },
+          "cnfpassword":{
+            "type":"string"
+          }
+        }
+      },
+
+      "startworkorder": {
+        "title": "Pricing criteria",
+        "required": [
+
+          "work_order_id"
+        ],
+
+        "properties": {
+
+          "work_order_id":{
+            "type":"integer"
+          }
+
+        }
+      },
+
+      "editcompanyProfile": {
+        "title": "Edit company profile",
+
+
+        "properties": {
+          "id":{
+            "type":"integer"
+          },
+
+          "company_name":{
+            "type":"string"
+          },
+          "company_type":{
+            "type":"integer"
+          },
+          "company_title":{
+            "type":"string"
+          },
+          "company_telephone":{
+            "type":"string"
+          },
+          "company_fax":{
+            "type":"string"
+          },
+          "company_email":{
+            "type":"string"
+          },
+          "contact_person":{
+            "type":"string"
+          },
+          "address1":{
+            "type":"string"
+          },
+          "address2":{
+            "type":"string"
+          },
+          "city":{
+            "type":"string"
+          },
+          "state":{
+            "type":"string"
+          },
+          "zipcode":{
+            "type":"string"
+          },
+          "same_as_company":{
+            "type":"integer"
+          },
+          "billing_contact_name":{
+            "type":"string"
+          },
+          "billing_street":{
+            "type":"string"
+          },
+          "billing_city":{
+            "type":"string"
+          },
+          "billing_state":{
+            "type":"string"
+          },
+          "billing_zipcode":{
+            "type":"string"
+          },
+          "billing_telephone":{
+            "type":"string"
+          },
+          "billing_fax":{
+            "type":"string"
+          },
+          "same_as_billing":{
+            "type":"integer"
+          },
+          "shipping_contact_name":{
+            "type":"string"
+          },
+          "shipping_street":{
+            "type":"string"
+          },
+          "shipping_city":{
+            "type":"string"
+          },
+          "shipping_state":{
+            "type":"string"
+          },
+          "shipping_zipcode":{
+            "type":"string"
+          },
+          "shipping_telephone":{
+            "type":"string"
+          },
+          "shipping_fax":{
+            "type":"string"
+          }
+
+        }
+      },
+
+      "ongoingworkorder": {
+        "title": "Ongoing Workorder",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          }
+        }
+      },
+
+      "editcontact": {
+        "title": "Edit contact",
+        "required": [
+          "contact_name",
+          "title"
+
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "room_number": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "fax": {
+            "type": "string"
+          }
+
+
+        }
+      },
+
+      "editsetups": {
+        "title": "Edit setups",
+        "required": [
+          "cal_specefications",
+          "labels"
+
+        ],
+        "properties": {
+          "cal_specefications": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "exact_date": {
+            "type": "string"
+          },
+          "plans": {
+            "type": "string"
+          },
+          "paymethod": {
+            "type": "string"
+          },
+          "paycomments": {
+            "type": "string"
+          },
+          "shipping": {
+            "type": "string"
+          },
+          "shipping_comments": {
+            "type": "string"
+          }
+        }
+      },
+
+
+      "createEquipment": {
+        "title": "Create Equipment",
+        "required": [
+          "equipment_model",
+          "equipment_name",
+          "asset_num",
+          "serial_num"
+
+        ],
+        "properties": {
+          "equipment_id": {
+            "type": "integer"
+          },
+          "equipment_model": {
+            "type": "integer"
+          },
+          "equipment_name": {
+            "type": "string"
+          },
+          "asset_num": {
+            "type": "string"
+          },
+          "serial_num": {
+            "type": "string"
+          },
+          "pref_contact": {
+            "type": "string"
+          },
+          "pref_location": {
+            "type": "string"
+          },
+          "pref_telephone": {
+            "type": "string"
+          },
+          "pref_email": {
+            "type": "string"
+          },
+          "last_date": {
+            "type": "string"
+          },
+          "next_due_date": {
+            "type": "string"
+          },
+          "cal_status": {
+            "type": "integer"
+          },
+          "found_status": {
+            "type": "integer"
+          },
+          "frequency_id": {
+            "type": "integer"
+          },
+          "exact_date": {
+            "type": "string"
+          },
+          "plan_id": {
+            "type": "integer"
+          },
+          "pref_contact_id": {
+            "type": "integer"
+          },
+          "pricing_id": {
+            "type": "integer"
+          },
+          "photo": {
+            "type": "string"
+          }
+        }
+      },
+
+      "workorderitemdetails": {
+        "title": "Workorder item details",
+        "required": [
+          "request_item_id"
+        ],
+        "properties": {
+          "request_item_id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "pricingcreteria": {
+        "title": "pricingcreteria",
+        "required": [
+
+          "plan_id",
+          "model_id"
+        ],
+        "properties": {
+          "plan_id": {
+            "type": "integer"
+          },
+          "model_id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "createpurchaseorder": {
+        "title": "createpurchaseorder",
+        "required": [
+
+          "request_id",
+          "request_item_ids"
+        ],
+        "properties": {
+          "request_id": {
+            "type": "integer"
+          },
+          "request_item_ids": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          }
+        }
+      },
+
+      "purchaseorderlists": {
+        "title": "Purchase order lists",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "invoice":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          }
+        }
+      },
+
+      "paymentwithoutorder": {
+        "title": "paymentwithoutorder",
+        "required": [
+
+          "request_id",
+          "request_item_ids"
+        ],
+        "properties": {
+          "card_number": {
+            "type": "string"
+          },
+          "expiry_date": {
+            "type": "string"
+          },
+          "cvv": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "integer"
+          },
+          "request_item_ids": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          }
+        }
+      },
+
+      "paymentlists": {
+        "title": "paymentlists",
+
+        "properties": {
+
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "invoice":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          }
+        }
+      },
+
+      "viewhistory": {
+        "title": "viewhistory",
+        "required": [
+
+          "date",
+          "equipment_id"
+        ],
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "equipment_id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "downloadpdf": {
+        "title": "downloadpdf",
+        "required": [
+
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "outside_calibrated": {
+            "type": "integer"
+          },
+          "document": {
+            "type": "string"
+          }
+        }
+      },
+
+        "Success": {
+            "title": "Success",
+            "required": [
+
+                "status"
+            ],
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                },
+                "OTP": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "Successgetuser": {
+            "title": "Successgetuser",
+            "required": [
+                "uuid",
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Error": {
+            "title": "Error",
+            "required": [
+                "status",
+                "message"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "message": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "login": {
+            "title": "User",
+            "required": [
+                 "email",
+                 "password"
+
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+              "password": {
+                "type": "string"
+              }
+
+
+            }
+        },
+
+
+
+      "getuser": {
+        "title": "User",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+
+
+      "shippingbilling": {
+        "title": "Shiiping billing",
+        "required": [
+          "name",
+          "street",
+          "city",
+          "state"
+
+        ],
+        "properties": {
+          "ref_key": {
+            "type": "integer"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "buildingname": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zipcode": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "fax": {
+            "type": "string"
+          }
+        }
+      },
+
+      "getshippingbilling": {
+        "title": "Get Shipping billing",
+        "required": [
+          "ref_key",
+          "id"
+
+        ],
+        "properties": {
+          "ref_key": {
+            "type": "integer"
+          },
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "getallshippingbilling": {
+        "title": "Get All Shipping billing",
+        "required": [
+          "ref_key"
+
+        ],
+        "properties": {
+          "ref_key": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "workorderdetail": {
+        "title": "Workorder detail",
+        "required": [
+          "id"
+
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "partslist": {
+        "title": "Parts List",
+        "required": [
+          "model_id"
+
+        ],
+        "properties": {
+          "model_id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "paymentwithinvoice": {
+        "title": "Parts List",
+        "required": [
+          "id"
+
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "savemaintenance": {
+        "title": "Save maintenance",
+
+        "properties": {
+
+          "work_order_item_id":{
+            "type":"integer"
+          },
+          "water_temperature":{
+            "type":"string"
+          },
+          "relevent_humidity":{
+            "type":"string"
+          },
+          "barometric_pressure":{
+            "type":"string"
+          },
+          "air_dencity":{
+            "type":"string"
+          },
+          "z_factor":{
+            "type":"string"
+          },
+          "liquid_dencity":{
+            "type":"string"
+          },
+          "checklists":{
+
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/checklists"
+            }
+          },
+          "parts":{
+
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/parts"
+            }
+          }
+        }
+      },
+
+      "checklists": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "parts": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "quantity": {
+            "type": "integer"
+          }
+        }
+      },
+
+
+
+      "saveasfound": {
+        "title": "Save As Found",
+
+        "properties": {
+
+          "work_order_item_id":{
+            "type":"integer"
+          },
+          "outside_calibrated":{
+            "type":"integer"
+          },
+          "water_temperature":{
+            "type":"string"
+          },
+          "relevent_humidity":{
+            "type":"string"
+          },
+          "barometric_pressure":{
+            "type":"string"
+          },
+          "air_dencity":{
+            "type":"string"
+          },
+          "z_factor":{
+            "type":"string"
+          },
+          "liquid_dencity":{
+            "type":"string"
+          },
+          "balance":{
+            "type":"integer"
+          },
+          "digital_barometer":{
+            "type":"integer"
+          },
+          "digital_thermometer":{
+            "type":"integer"
+          },
+          "thermocouple":{
+            "type":"integer"
+          },
+
+          "channel_readings":{
+
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/test_points"
+            }
+          }
+        }
+      },
+
+
+      "test_points": {
+        "type": "object",
+        "properties": {
+          "test_point_id": {
+            "type": "integer"
+          },
+          "channel_id": {
+            "type": "integer"
+          },
+          "sample_reading": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/samplereadings"
+            }
+          },
+
+          "reading_mean": {
+            "type": "string"
+          },
+          "reading_mean_volume": {
+            "type": "string"
+          },
+          "reading_sd": {
+            "type": "string"
+          },
+          "reading_unc": {
+            "type": "string"
+          },
+          "reading_accuracy": {
+            "type": "string"
+          },
+          "reading_precision": {
+            "type": "string"
+          },
+          "reading_status": {
+            "type": "string"
+          },
+          "reading_file": {
+            "type": "string"
+          }
+
+        }
+      },
+
+
+
+
+      "testpoints": {
+        "type": "object",
+        "properties": {
+          "test_point_id": {
+            "type": "integer"
+          },
+          "channel_id": {
+            "type": "integer"
+          },
+          "sample_reading": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/samplereadings"
+            }
+          },
+          "reading_mean": {
+            "type": "string"
+          },
+          "reading_sd": {
+            "type": "string"
+          },
+          "reading_unc": {
+            "type": "string"
+          },
+          "reading_accuracy": {
+            "type": "string"
+          },
+          "reading_precision": {
+            "type": "string"
+          },
+          "reading_status": {
+            "type": "string"
+          },
+          "reading_file": {
+            "type": "string"
+          }
+        }
+      },
+
+
+
+      "samplereadings": {
+        "type": "object",
+        "properties": {
+          "sample_weight": {
+            "type": "string"
+          },
+          "sample_volume": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+
+
+      "saveasdespatched": {
+        "title": "Save As Despatched",
+
+        "properties": {
+          "despatched_items":{
+
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/despatched_items"
+            }
+          }
+        }
+      },
+
+      "despatched_items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "outside_calibrated": {
+            "type": "integer"
+          },
+          "external_cleaning": {
+            "type": "integer"
+          },
+          "labels": {
+            "type": "integer"
+          },
+          "pdfreport": {
+            "type": "string"
+          }
+        }
+      },
+
+
+
+      "shippingbillingmaster": {
+        "title": "Shipping/Billing",
+        "required": [
+          "key"
+
+        ],
+        "properties": {
+          "key": {
+            "type": "integer"
+          }
+        }
+      },
+
+      "testpointcalculation": {
+        "title": "Test point calculation",
+
+        "properties": {
+
+          "id":{
+            "type":"integer"
+          },
+
+          "test_point":{
+            "type":"integer"
+          },
+
+          "water_temperature":{
+            "type":"string"
+          },
+
+          "relevent_humidities":{
+            "type":"string"
+          },
+          "barometric_pressure":{
+            "type":"string"
+          },
+          "air_density":{
+            "type":"string"
+          },
+          "z_factor":{
+            "type":"string"
+          },
+          "liquid_density":{
+            "type":"string"
+          },
+          "sensitivity":{
+            "type":"string"
+          },
+          "weights":{
+
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/weights"
+            }
+          }
+        }
+      },
+
+      "weights": {
+        "title": "Weights",
+
+        "properties": {
+
+          "weight":{
+            "type":"string"
+          }
+        }
+      },
+
+      "updateandmove": {
+        "title": "Update & move",
+
+        "properties": {
+
+          "work_order_id":{
+            "type":"integer"
+          },
+          "work_order_status":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "reports": {
+        "title": "Reports",
+
+        "properties": {
+
+          "status":{
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/status"
+            }
+          },
+          "limit":{
+            "type":"integer"
+          },
+          "offset":{
+            "type":"integer"
+          },
+          "keyword":{
+            "type":"string"
+          }
+        }
+      },
+
+      "viewpdf": {
+        "title": "View pdf",
+
+        "properties": {
+
+
+          "id":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "moveinstrument": {
+        "title": "Move instrument",
+
+        "properties": {
+
+          "work_order_item_id":{
+            "type":"integer"
+          },
+          "work_order_status":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "consolidateReport": {
+        "title": "Consolidate Report",
+
+        "properties": {
+
+          "work_order_id":{
+            "type":"integer"
+          },
+          "comments":{
+            "type":"string"
+          }
+        }
+      },
+
+      "completeworkorder": {
+        "title": "Complete workorder",
+
+        "properties": {
+
+          "work_order_id":{
+            "type":"integer"
+          },
+          "confirm":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "viewconsolidatepdf": {
+        "title": "View consolidate pdf",
+
+        "properties": {
+
+          "request_id":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "instrumentinfo": {
+        "title": "Instrument Info",
+
+        "properties": {
+
+          "id":{
+            "type":"integer"
+          },
+          "work_order_id":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "paymentapicall": {
+        "title": "Payment api call",
+
+        "properties": {
+
+          "card_number":{
+            "type":"string"
+          },
+          "expiry_date":{
+            "type":"string"
+          },
+          "cvv":{
+            "type":"integer"
+          },
+          "order_id":{
+            "type":"string"
+          },
+          "amount":{
+            "type":"string"
+          }
+        }
+      },
+
+      "brands": {
+        "title": "Brands",
+
+        "properties": {
+
+          "manufacturer_id":{
+            "type":"integer"
+          }
+        }
+      },
+
+      "equipmentmodel": {
+        "title": "Equipment model",
+
+        "properties": {
+
+          "brand_id":{
+            "type":"integer"
+          }
+        }
+      },
+      "proxylogin": {
+        "title": "Proxy Login",
+
+        "properties": {
+
+          "proxy_token":{
+            "type":"string"
+          }
+        }
+      },
+
+      "status": {
+        "title": "status",
+
+        "properties": {
+
+          "id":{
+            "type":"object"
+          }
+        }
+      },
+
+
+        "SuccessOTP": {
+            "title": "Success",
+            "required": [
+                "uuid",
+                "status"
+            ],
+            "properties": {
+                "OTP": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "ErrorOTP": {
+            "title": "Error",
+            "required": [
+                "status",
+                "message"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "message": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "user",
+            "description": "User API",
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "http://swagger.io"
+            }
+        }
+    ]
+}

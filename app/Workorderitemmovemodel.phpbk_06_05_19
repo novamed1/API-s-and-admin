@@ -1,0 +1,199 @@
+<?php
+
+namespace App;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Zizaco\Entrust\Traits\EntrustUserTrait;
+use Illuminate\Database\QueryException as QueryException;
+use DB;
+use Input;
+use Carbon\Carbon;
+use DateTime;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+
+class Workorderitemmovemodel extends Authenticatable
+{
+    protected $table = 'tbl_work_order as W';
+
+
+
+    function workorderitem($id)
+    {
+
+        DB::enableQueryLog();
+        $query = DB::table('tbl_work_order_items')
+            ->where('id',$id)
+            ->first();
+        //print_r(DB::getQueryLog()); die;
+        return $query;
+    }
+
+    public function saveWorkOrderItemStatus($input)
+    {
+
+        if ($input['id']) {
+            $result = DB::table('tbl_work_order_items')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+
+            $result = DB::table('tbl_work_order_items')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    function getInstrument($workorderId)
+    {
+        $query= DB::table('tbl_work_order_items as oi')
+            ->join('tbl_service_request_item as ri','ri.id','=','oi.request_item_id')
+            ->join('tbl_due_equipments as de','de.id','=','ri.due_equipments_id')
+            ->join('tbl_equipment as e','e.id','=','de.equipment_id')
+            ->join('tbl_equipment_model as em','em.id','=','e.equipment_model_id')
+            ->join('tbl_product_type as pt','pt.product_type_id','=','em.product_id')
+            ->join('tbl_service_plan as sp','sp.id','=','ri.test_plan_id')
+            ->where('oi.work_order_id',$workorderId)
+            ->select('e.id','e.asset_no','e.serial_no','em.model_name','oi.id as work_order_item_id','em.id as model_id','pt.product_type_name','em.model_description','sp.service_plan_name','oi.as_found_status','oi.maintenance_status','oi.as_calibrated_status','oi.despatched_status')->get();
+        return $query;
+    }
+
+    function work_order_status_move($workorder_item_id,$status)
+    {
+        $query = DB::table('tbl_workorder_status_move')
+            ->where([['workorder_item_id',$workorder_item_id],['workorder_status',$status]])
+            ->first();
+        //print_r(DB::getQueryLog()); die;
+        return $query;
+    }
+
+    function getTechnicianDeviceBarometer($model_id,$tech_id,$workOrderId)
+    {
+        $query = DB::table('tbl_device as d')
+            ->join('tbl_device_model as dm','dm.id','=','d.device_model_id')
+            ->join('tbl_workorder_status_move as sm','sm.barometer_device_id','=','d.id','left')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id','left')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id','left')
+            ->where([['dm.id',$model_id],['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->select('d.serial_no','sm.created_on','dm.name as device_model_name','d.last_cal_date','d.next_due_date')->get()
+            ->first();
+        //print_r(DB::getQueryLog()); die;
+        return $query;
+    }
+
+    function getTechnicianDeviceThermometer($model_id,$tech_id,$workOrderId)
+    {
+        $query = DB::table('tbl_device as d')
+            ->join('tbl_device_model as dm','dm.id','=','d.device_model_id')
+            ->join('tbl_workorder_status_move as sm','sm.thermometer_device_id','=','d.id','left')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id','left')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id','left')
+            ->where([['dm.id',$model_id],['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->select('d.serial_no','sm.created_on','dm.name as device_model_name','d.last_cal_date','d.next_due_date')->get()
+            ->first();
+        //print_r(DB::getQueryLog()); die;
+        return $query;
+    }
+
+    function getTechnicianDeviceThermocouple($model_id,$tech_id,$workOrderId)
+    {
+        $query = DB::table('tbl_device as d')
+            ->join('tbl_device_model as dm','dm.id','=','d.device_model_id')
+            ->join('tbl_workorder_status_move as sm','sm.thermocouple_device_id','=','d.id','left')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id','left')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id','left')
+            ->where([['dm.id',$model_id],['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->select('d.serial_no','sm.created_on','dm.name as device_model_name','d.last_cal_date','d.next_due_date')->get()
+            ->first();
+        //print_r(DB::getQueryLog()); die;
+        return $query;
+    }
+
+    function getTechnicianDeviceBalance($model_id,$tech_id,$workOrderId)
+    {
+        $query = DB::table('tbl_device as d')
+            ->join('tbl_device_model as dm','dm.id','=','d.device_model_id')
+            ->join('tbl_workorder_status_move as sm','sm.balance_device_id','=','d.id','left')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id','left')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id','left')
+            ->where([['dm.id',$model_id],['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->select('d.serial_no','sm.created_on','dm.name as device_model_name','d.last_cal_date','d.next_due_date')->get()
+            ->first();
+        //print_r(DB::getQueryLog()); die;
+        return $query;
+    }
+
+    function getWorkorderCalibration($workOrderId)
+    {
+        $query = DB::table('tbl_workorder_ascalibrated_log as cl')
+            ->join('tbl_workorder_status_move as sm','sm.id','=','cl.workorder_status_id')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id')
+            ->join('tbl_service_request_item as ri','ri.id','=','oi.request_item_id')
+            ->join('tbl_due_equipments as de','de.id','=','ri.due_equipments_id')
+            ->join('tbl_equipment as e','e.id','=','de.equipment_id')
+            ->join('tbl_equipment_model as em','em.id','=','e.equipment_model_id')
+            ->where([['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->groupBy('oi.id')
+            ->select('de.last_cal_date', 'de.next_due_date','e.asset_no','em.model_description','e.location','cl.reading_mean','cl.reading_mean_volume','cl.reading_sd','cl.reading_unc','cl.reading_accuracy','cl.reading_precision','cl.reading_status','sm.id as status_move_id','oi.id as work_order_item_id','em.model_name','cl.target_accuracy','cl.target_precision')->get();
+        return $query;
+    }
+    function getWorkorderCalibrations($workOrderId)
+    {
+        $query = DB::table('tbl_workorder_ascalibrated_log as cl')
+            ->join('tbl_workorder_status_move as sm','sm.id','=','cl.workorder_status_id')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id')
+            ->join('tbl_service_request_item as ri','ri.id','=','oi.request_item_id')
+            ->where([['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->select('cl.*')->get()->toArray();
+        return $query;
+    }
+
+    function getWorkorderCalibrationItems($workOrderId,$workOrderItems)
+    { //print_r($workOrderItems);die;
+        $query = DB::table('tbl_workorder_ascalibrated_log as cl')
+            ->join('tbl_workorder_status_move as sm','sm.id','=','cl.workorder_status_id')
+            ->join('tbl_work_order_items as oi','oi.id','=','sm.workorder_item_id')
+            ->join('tbl_work_order as wo','wo.id','=','oi.work_order_id')
+            ->join('tbl_service_request_item as ri','ri.id','=','oi.request_item_id')
+            ->join('tbl_due_equipments as de','de.id','=','ri.due_equipments_id')
+            ->join('tbl_equipment as e','e.id','=','de.equipment_id')
+            ->join('tbl_equipment_model as em','em.id','=','e.equipment_model_id')
+            ->where([['wo.id',$workOrderId],['sm.workorder_status',3]])
+            ->whereIn('oi.id',$workOrderItems)
+            ->groupBy('oi.id')
+            ->select('de.last_cal_date', 'de.next_due_date','e.asset_no','em.model_description','e.location','cl.reading_mean','cl.reading_mean_volume','cl.reading_sd','cl.reading_unc','cl.reading_accuracy','cl.reading_precision','cl.reading_status','oi.id as work_order_item_id')->get();
+        return $query;
+
+    }
+
+    function getServiceRequestWorkorder($requestId)
+    {
+        $query = DB::table('tbl_work_order as wo')
+            ->where('request_id','=',$requestId)->first();
+        return $query;
+    }
+
+
+    public function saveWorkOrder($input)
+    {
+
+        if ($input['id']) {
+            $result = DB::table('tbl_work_order')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+
+            $result = DB::table('tbl_work_order')->insertGetId($input);
+            return $result;
+        }
+    }
+
+
+
+
+}
+
+    
+   
+
+
+
+

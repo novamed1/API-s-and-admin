@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title></title>
+
+
+    <style type="text/css">
+        /*table {*/
+            /*font-family: arial, sans-serif;*/
+            /*border-collapse: collapse;*/
+            /*width: 100%;*/
+        /*}*/
+
+        /*td, th {*/
+            /*border: 1px solid #dddddd;*/
+            /*text-align: left;*/
+            /*padding: 8px;*/
+        /*}*/
+
+         /*tr:nth-child(even) {*/
+            /*background-color: #dddddd;*/
+        /*}*/
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table td {
+            padding: 5px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+        body {
+            padding: 0mm 0 0mm 0;
+            margin: 0;
+            font-size: 10px;
+            font-family: Open Sans, Source Sans Pro, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+        }
+
+        .wrapper {
+            padding: 0 0mm 0mm;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 1mm;
+            float: left;
+        }
+
+        /*table {*/
+            /*border-collapse: collapse;*/
+            /*width: 100%;*/
+        /*}*/
+
+        /*table td {*/
+            /*padding: 5px;*/
+            /*vertical-align: middle;*/
+            /*font-size: 14px;*/
+        /*}*/
+
+        p {
+            margin: 0;
+            font-size: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <table>
+        <tr>
+            <td><img src="{{asset('img/logo.png')}}" width="100px"></td>
+
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td width="70%">
+                <p style="font-size: 11px;color:#333;text-transform: uppercase;margin: 0;padding: 0;">Novamed INC, 8136
+                    Lawndale</p>
+                <p style="font-size: 11px;color:#333;text-transform: uppercase;margin: 0;padding: 0;">Ave, Skokie, IL
+                    60076-3413,</p>
+                <p style="font-size: 11px;color:#333;text-transform: uppercase;margin: 0;padding: 0;">Tel:
+                    1-800-354-6676,</p>
+                <p style="font-size: 11px;color:#333;text-transform: uppercase;margin: 0;padding: 0;">Fax:
+                    1-847-675-3322,</p>
+                <p style="font-size: 11px;color:#333;text-transform: uppercase;margin: 0;padding: 0;">Email:
+                    support@novamed.com</p>
+            </td>
+            <td style="text-align: left;vertical-align: top;">
+                <p style="font-size: 11px;color:#000;margin: 0;padding: 0 0 2px;"><span
+                            style="color:#999;display: inline-block;width: 120px;">Quotation date:</span> {{date('m-d-Y')}}
+                </p>
+                <p style="font-size: 11px;color:#000;margin: 0;padding: 0 0 2px;"><span
+                            style="color:#999;display: inline-block;width: 120px;">Quotation#:</span> {{$qutationnumber}}
+                </p>
+
+            </td>
+        </tr>
+    </table>
+    <table style="background: #f5f5f5;">
+        <tr>
+            <td style="font-size: 14px;color:#000;text-transform: uppercase;text-align:center;margin: 0;padding: 5px 0;font-weight: 600;">
+                QUOTATION
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td width="60%">
+                <p style="font-size: 13px;color:#000;text-transform: uppercase;margin: 0;padding: 0;font-weight: 700;">
+                    Bill To :</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['billing']->billing_contact}}
+                    ,</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['billing']->address1}}
+                    ,</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['billing']->city}}</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['billing']->state}}</p>
+            </td>
+            <td style="text-align: left;vertical-align: top;">
+                <p style="font-size: 13px;color:#000;text-transform: uppercase;margin: 0;padding: 0;font-weight: 700;">
+                    Ship To :</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['shipping']->customer_name}}
+                    ,</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['shipping']->address1}}
+                    ,</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['shipping']->city}}</p>
+                <p style="font-size: 13px;color:#000;margin: 0;padding: 1px 0;font-weight: 500;">{{$data['shipping']->state}}</p>
+            </td>
+        </tr>
+    </table>
+    <table style="padding-left:3px;padding-right:3px;border-top: solid thin #ddd;border-bottom: solid thin #ddd;">
+        <tr>
+            <td style="border-right: solid thin #ddd;">
+                <p style="font-size: 12px;color:#666;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 5px 0;font-weight: 400;">
+                    Customer Name</p>
+                <p style="font-size: 11px;color:#000;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 0px 0;font-weight: 700;">{{$data['customer']->customer_name}}</p>
+            </td>
+            <td style="border-right: solid thin #ddd;">
+                <p style="font-size: 12px;color:#666;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 5px 0;font-weight: 400;">
+                    State</p>
+                <p style="font-size: 11px;color:#000;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 0px 0;font-weight: 700;">{{$data['customer']->state}}</p>
+            </td>
+            <td style="border-right: solid thin #ddd;">
+                <p style="font-size: 12px;color:#666;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 5px 0;font-weight: 400;">
+                    City</p>
+                <p style="font-size: 11px;color:#000;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 0px 0;font-weight: 700;">
+                    {{$data['customer']->city}}</p>
+            </td>
+            <td>
+                <p style="font-size: 12px;color:#666;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 5px 0;font-weight: 400;">
+                    Zip code</p>
+                <p style="font-size: 11px;color:#000;text-align:center;text-transform: uppercase;text-align:center;margin: 0;padding: 0px 0;font-weight: 700;">{{$data['customer']->zip_code}}</p>
+            </td>
+        </tr>
+
+    </table>
+
+    <div style="padding: 10px;">
+        <table style=" border: 1px solid #dddddd;border-bottom: 0px;width:100%;border-collapse:collapse">
+            <tr style="background: #cecece;">
+                {{--<th style="font-size: 13px;color:#333;padding: 3px;border-right:solid thin #ddd;font-weight:500;"--}}
+                <th  style="font-size:12px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"
+                >Line Item
+                </th>
+                {{--<th style="font-size: 13px;color:#333;padding: 3px;border-right:solid thin #ddd;font-weight:500;"--}}
+                <th  style="font-size:12px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"
+                   >Model Description
+                </th>
+                {{--<th style="font-size: 13px;color:#333;padding: 3px;border-right:solid thin #ddd;font-weight:500;"--}}
+                <th  style="font-size:12px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"
+                >Manufacture
+                </th>
+                {{--<th style="font-size: 13px;color:#333;padding: 3px;border-right:solid thin #ddd;font-weight:500;"--}}
+                <th  style="font-size:12px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"
+                >brand
+                </th>
+                {{--<th style="font-size: 13px;color:#333;padding: 3px;border-right:solid thin #ddd;font-weight:500;"--}}
+                <th  style="font-size:12px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"
+                >Qty
+                </th>
+
+                {{--<th style="font-size: 13px;color:#333;padding: 3px;border-right:solid 0px #ddd;font-weight:500;"--}}
+                <th  style="font-size:12px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"
+                >Amount
+                </th>
+            </tr>
+
+            @if(count($items))
+                <?php $i = 1; ?>
+                @foreach($items as $key=>$row)
+                    <tr style="border-bottom: solid thin #ddd;" class="MainHeader">
+                        <td style="font-size:12px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">{{$i}}</td>
+                        <td style="font-size:12px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">{{$row['description']}}</td>
+                        <td style="font-size:12px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">{{$row['manufacturer_name']}}</td>
+                        <td style="font-size:12px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">{{$row['brand_name']}}</td>
+                        <td style="font-size:12px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">{{$row['quantity']}}</td>
+
+                        <td style="font-size:10px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;text-align:right;">
+                           <span style="font:bold"> $ {{$row['totalItemPrice']}}</span></td>
+
+                    </tr>
+
+                    @if(count($row['lineItems']))
+                            <tr style="border-bottom: solid 0px #ddd;background: #eceaea;">
+                                <td style="font-size:12px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;"></td>
+                                <td
+                                    style="font-size:10px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                Assert Number
+                                </td>
+                                <td
+                                        style="font-size:10px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                 Serial Number
+                                </td>
+                                <td
+                                        style="font-size:10px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                   Plan Name
+                                </td>
+                                <td
+                                        style="font-size:10px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                </td>
+                                <td
+                                        style="font-size:10px;text-transform:uppercase;font-weight:700;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                  Price
+                                </td>
+                            </tr>
+                        <?php $j=1 ?>
+                        @foreach($row['lineItems'] as $srow)
+                            <tr style="border-bottom: solid 0px #ddd;background-color: #dddddd;" >
+                                <td style="font-size:10px;color:#000;border-right:solid thin #ddd;vertical-align: top;">
+                                    {{$i.'.'.$j}}
+                                </td>
+                                <td style="font-size:10px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                    {{$srow['asset_no']}}
+                                </td>
+                                <td style="font-size:10px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                    {{$srow['serial_no']}}
+                                </td>
+                                <td style="font-size:10px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+                                    {{$srow['plan']}}
+                                </td>
+                                <td style="font-size:10px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;">
+
+                                </td>
+
+                                <td style="font-size:10px;color:#000;padding:3px;border-right:solid thin #ddd;vertical-align: top;text-align:right;">
+                                   $ {{number_format($srow['price'],2)}}
+                                </td>
+
+                            </tr>
+                            <?php $j++; ?>
+                        @endforeach
+                    @endif
+
+
+                    <?php $i++; ?>
+                @endforeach
+            @endif
+
+
+            <tr style="border-top: solid thin #ddd;border-left: solid 1px #fff;border-right: solid 0px #fff;">
+                <td colspan="3" rowspan="4"
+                    style="font-size:12px;color:#000;padding:10px 5px 5px;border-right:solid 0px #ddd;vertical-align: top;">
+                    {{--<p style="font-size: 11px;color:#666;">Comments</p>--}}
+                    {{--<p style="font-size: 11px;color:#999;">{{$comments}}</p>--}}
+                </td>
+                <td colspan="2"
+                    style="font-size:11px;color:#000;padding:10px 5px 5px;border-right:solid 0px #ddd;vertical-align: top;text-align:left;">
+                    Sub Total
+                </td>
+                <td style="font-size:11px;color:#000;padding:3px;border-right:solid 0px #ddd;vertical-align: top;text-align:right;">
+                    $ {{number_format($totalCost,2)}}
+                </td>
+            </tr>
+            <tr style="border-top: solid 0px #ddd;border-left: solid 1px #fff;border-right: solid 0px #fff;">
+                <td colspan="2"
+                    style="font-size:11px;color:#000;padding:5px;border-right:solid 0px #ddd;vertical-align: top;text-align:left;">
+                    Shipping &amp; Handling
+                </td>
+                <td style="font-size:11px;color:#000;padding:3px;border-right:solid 0px #ddd;vertical-align: top;text-align:right;">
+                    $ {{number_format($shippingCharge,2)}}
+                </td>
+            </tr>
+            <tr style="border-top: solid 0px #ddd;border-left: solid 1px #fff;border-right: solid 0px #fff;">
+                <td colspan="2"
+                    style="font-size:11px;color:#000;padding:5px;border-right:solid 0px #ddd;vertical-align: top;text-align:left;">
+                    Sales Tax
+                </td>
+                <td style="font-size:11px;color:#000;padding:3px;border-right:solid 0px #ddd;vertical-align: top;text-align:right;">
+                    $ {{number_format($serviceTax,2)}}
+                </td>
+            </tr>
+            <tr style="border-top: solid 0px #ddd;border-left: solid 1px #fff;border-right: solid 0px #fff;">
+                <td colspan="2"
+                    style="font-size:11px;color:#000;padding:5px;border-right:solid 0px #ddd;vertical-align: top;text-align:left;font-weight: 700;">
+                    Total
+                </td>
+                <td style="font-size:11px;color:#000;padding:3px;border-right:solid 0px #ddd;vertical-align: top;text-align:right;font-weight: 700;">
+                   <span style="font: bold"> $ {{number_format($GrandTotal,2)}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Authorization, Content-Type, Accept, Authorization, X-Request-With, token');
+use Illuminate\Http\Request;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+Route::post('role', 'UserController@createRole');
+// Route to create a new permission
+Route::post('permission', 'UserController@createPermission');
+// Route to assign role to user
+Route::post('assign-role', 'UserController@assignRole');
+// Route to attache permission to a role
+Route::post('attach-permission', 'UserController@attachPermission');
+Route::post('auth/register', 'UserController@register');
+
+Route::post('instruments/viewhistory', 'ServicerequestController@viewhistory');
+
+
+Route::group(['middleware' => 'cors'], function () {   // Protected route
+    Route::post('auth/login', 'UserController@login');
+    Route::post('refreshtoken', 'UserController@refreshtoken');
+    Route::post('proxylogin', 'UserController@proxylogin');
+});
+
+Route::group(['middleware' => 'cors'], function () {   // Protected route
+    Route::post('auth/technicianlogin', 'TechnicianuserController@technicianlogin');
+
+});
+
+//Route::group(['middleware' => ['ability:customer,equipments,admin']], function () {   // Protected route
+//    Route::post('equipment/allEquipments', 'EquipmentController@allEquipments');
+//    Route::post('userList', 'UserController@userList');
+//});
+
+Route::group(['middleware' => 'ability'], function () {
+    Route::post('changePassword', 'UserController@changePassword');
+});
+
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::post('equipment/allEquipments', 'EquipmentController@allEquipments');
+    Route::post('userList', 'UserController@userList');
+    Route::get('company/getCompanyTypes', 'CompanyController@getCompanyTypes');
+    Route::get('company/companyProfile', 'CompanyController@companyProfile');
+    Route::post('company/editcompanyProfile', 'CompanyController@editcompanyProfile');
+    Route::post('company/editcontact', 'CompanyController@editcontact');
+    Route::post('company/shippingbilling', 'CompanyController@shippingbilling');
+    Route::post('company/getshippingbilling', 'CompanyController@getshippingbilling');
+    Route::post('company/getallshippingbilling', 'CompanyController@getallshippingbilling');
+    Route::post('auth/userCreation', 'UserController@userCreation');
+    Route::post('getuser', 'UserController@getuser');
+    Route::post('getusertechnician', 'UserController@getusertechnician');
+    Route::post('auth/changepassworduser', 'UserController@changepassworduser');
+    Route::post('changePassword', 'UserController@changePassword');
+    Route::post('userDetail', 'UserController@userDetail');
+    Route::post('userDetailTechnician', 'UserController@userDetailTechnician');
+    Route::post('edittechnician', 'UserController@edittechnician');
+    Route::get('setupmasters', 'SettingsController@setupmasters');
+    Route::get('setups', 'SettingsController@setups');
+    Route::post('editsetups', 'SettingsController@editsetups');
+    Route::post('servicePlans', 'UserController@servicePlans');
+    Route::post('frequency', 'UserController@frequency');
+    Route::post('equipmentmodel', 'UserController@equipmentmodel');
+    Route::post('calfoundstatus', 'UserController@calfoundstatus');
+    Route::post('pricingcreteria', 'UserController@pricingcreteria');
+    Route::post('shippingbillingmaster', 'UserController@shippingbillingmaster');
+    Route::post('auth/logout', 'UserController@userLogout');
+    Route::post('equipment/createEquipment', 'EquipmentController@createEquipment');
+    Route::post('equipment/allEquipmentsCount', 'EquipmentController@allEquipmentsCount');
+    Route::post('equipment/equipmentDetail', 'EquipmentController@equipmentDetail');
+    Route::post('equipment/dueEquipments', 'EquipmentController@dueEquipments');
+    Route::post('equipment/viewAlldueEquipments', 'EquipmentController@viewAlldueEquipments');
+    Route::post('servicerequest/pricingCriteria', 'ServicerequestController@pricingCriteria');
+    Route::post('servicerequest/addServiceRequest', 'ServicerequestController@createservicerequest');
+    Route::post('servicerequest/serviceRequestCounts', 'ServicerequestController@serviceRequestCounts');
+    Route::post('servicerequest/serviceRequestDashboardCounts', 'ServicerequestController@serviceRequestDashboardCounts');
+    Route::post('servicerequest/serviceRequestLists', 'ServicerequestController@serviceRequestLists');
+    Route::post('servicerequest/serviceRequestSummary', 'ServicerequestController@serviceRequestSummary');
+    Route::post('servicerequest/viewpdf', 'ServicerequestController@viewpdf');
+    Route::post('servicerequest/viewconsolidatepdf', 'ServicerequestController@viewconsolidatepdf');
+    Route::get('dashboard/dashboardCounts', 'DashboardController@dashboardCounts');
+    Route::post('dashboard/dashboardDueLists', 'DashboardController@dashboardDueLists');
+    Route::post('payment/createpurchaseorder', 'PaymentController@createpurchaseorder');
+    Route::post('payment/purchaseorderlists', 'PaymentController@purchaseorderlists');
+    Route::post('payment/paymentwithoutorder', 'PaymentController@paymentwithoutorder');
+    Route::post('payment/paymentlists', 'PaymentController@paymentlists');
+    Route::post('payment/paymentwithinvoice', 'PaymentController@paymentwithinvoice');
+    Route::post('payment/paymentapicall', 'PaymentController@paymentapicall');
+    Route::post('manufacturers', 'UserController@manufacturer');
+    Route::post('brands', 'UserController@brands');
+
+});
+
+
+Route::group(['middleware' => 'technician'], function () {
+    Route::post('techdashboard/techniciandashboard', 'TechnicianDashboardController@assignedWorkorders');
+    Route::post('techdashboard/startworkorder', 'TechnicianDashboardController@startworkorder');
+    Route::post('techdashboard/ongoingworkorder', 'TechnicianDashboardController@ongoingworkorder');
+    Route::post('techdashboard/reports', 'TechnicianDashboardController@reports');
+    Route::post('techdashboard/consolidateReport', 'Workorderitemmove@consolidateReport');
+    Route::post('tech/workorderitemdetails', 'TechnicianDashboardController@workorderitemdetails');
+    Route::post('tech/workorderitemdetailsasfound', 'TechnicianDashboardController@workorderitemdetailsasfound');
+    Route::post('tech/workorderitemdetailsascalibrated', 'TechnicianDashboardController@workorderitemdetailsascalibrated');
+    Route::post('techdashboard/workorderdetail', 'TechnicianDashboardController@workorderdetail');
+    Route::post('tech/partslist', 'TechnicianProcessController@partslist');
+    Route::post('statusupdate/savemaintenance', 'TechnicianProcessUpdationController@savemaintenance');
+    Route::post('statusupdate/saveasfound', 'TechnicianProcessUpdationController@saveasfound');
+    Route::post('statusupdate/saveascalibrated', 'TechnicianProcessUpdationController@saveascalibrated');
+    Route::post('statusupdate/saveasdespatched', 'TechnicianProcessUpdationController@saveasdespatched');
+    Route::post('testpoint/testpointcalculation', 'TechnicianProcessUpdationController@testpointcalculation');
+    Route::post('statusmove/workordermove', 'TechnicianProcessUpdationController@workordermove');
+    Route::post('instrumentmove/workorderitemmove', 'Workorderitemmove@workorderitemmove');
+    Route::post('despatch/downloadpdf', 'TechnicianProcessController@downloadpdf');
+    Route::post('complete/completeworkorder', 'TechnicianProcessController@completeworkorder');
+
+    Route::post('techdashboard/workorderinstrumentdetail', 'ProcessOperationController@workorderinstrumentdetail');
+    Route::post('techdashboard/instrumentinfo', 'ProcessOperationController@instrumentinfo');
+
+    //View Summary
+    Route::post('report/viewSummary','TechnicianDashboardController@viewSummary');
+
+});

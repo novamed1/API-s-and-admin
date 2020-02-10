@@ -1,0 +1,153 @@
+@extends('layout.header')
+@section('content')
+
+    <div class="am-content">
+        <div class="page-head">
+
+            <h2>Customer List</h2>
+
+            <ol class="breadcrumb">
+
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Calibration</a></li>
+                <li><a href="#">Qualtity Check</a></li>
+
+                <!--                    <li class="active"></li>-->
+
+            </ol>
+
+            {{--<div class="text-right div-rul">--}}
+            {{--<a href="{{url('admin/a')}}" class="btn btn-space btn-primary">Create Customer</a>--}}
+            {{--</div>--}}
+        </div>
+        <div class="main-content">
+            <div class="row styleforsearch">
+                <div class="panel panel-default keywordsearchpanel">
+
+                    <div class="panel-body">
+
+
+                        <form action="{{url('admin/qualitycheck')}}" method="post">
+                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                            <div class="col-md-9">
+                                <div class="form-group">
+
+                                    <input type="text" id="keywordsearch" name="keyword" placeholder="Enter Keyword "
+                                           class="form-control" value="" style="margin:  auto;margin-top: 6px;">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3" style="margin:  auto; margin-top: 8px;">
+                                <input type="submit" id="searchbtn" value="Search"
+                                       class="btn btn-space btn-primary">
+
+
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                            <div class="widget widget-fullwidth widget-small">
+
+                                <div class="flash-message">
+                                    @include('notification/notification')
+                                </div>
+
+
+                                @if($data)
+
+                                    <div class="sms-table-list" id="pageResult">
+
+                                        <div class="table-responsive noSwipe">
+                                            <table class="table table-striped table-fw-widget table-hover">
+
+                                                <thead>
+                                                <tr>
+                                                    <th>WorkOrder No</th>
+                                                    <th>Asset No</th>
+                                                    <th>Serial No</th>
+                                                    <th>Technician</th>
+                                                    <th>View PDF</th>
+                                                    <th>Review PDF</th>
+
+                                                </tr>
+                                                </thead>
+
+                                                @foreach($data as $row)
+                                                    <tbody>
+
+                                                    <tr class="">
+
+                                                        <td>{{$row->workOrderNumber}}</td>
+                                                        <td>{{$row->assetNumber}}</td>
+                                                        <td>{{$row->serialNumber}}</td>
+                                                        <td>{{$row->reviewdTechnician}}</td>
+
+
+                                                        <td>
+                                                            @if($row->report)
+                                                                <a download="{{$row->report}}"
+                                                                   href="{{'http://' . $_SERVER['SERVER_NAME'] . '/public/report/technicianreview/'. $row->report}}"
+                                                                   class="btn btn-space btn-primary"
+                                                                   id="viewDetails"><i class=''
+                                                                                       aria-hidden="true">View
+                                                                        PDF</i></a>
+                                                            @endif
+
+                                                        </td>
+
+
+                                                        <td>
+                                                            <a href="{{url('admin/reviewWorkOrder/'.$row->workOrderItemId.'')}}"
+                                                               class="btn btn-space btn-primary"
+                                                               id="viewDetails"><i class=''
+                                                                                   aria-hidden="true">Review
+                                                                    PDF</i></a></td>
+
+
+                                                    </tbody>
+                                                @endforeach
+
+
+                                            </table>
+                                            @else
+                                                <div class="col-md-9 col-sm-9" id="Result" style='text-align: center;'>
+
+                                                    <span>No result found</span>
+                                                </div>
+
+                                            @endif
+
+
+                                        </div>
+                                        <div class="panel panel-default">
+
+                                            <div class="panel-body">
+                                                <div class="text-right">
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+@stop

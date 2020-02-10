@@ -1,0 +1,319 @@
+@extends('layout.header')
+@section('content')
+    <style>
+        .div-rul a {
+            margin-top: -40px;
+
+        }
+
+        #dt_basic tr th {
+            font-size: 13px;
+        }
+
+        #dt_basic tr td {
+            font-size: 12px;
+        }
+
+    </style>
+    <div class="am-content">
+        <div class="page-head">
+
+            <h2> Quality Check</h2>
+
+            <ol class="breadcrumb">
+
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Calibration</a></li>
+                <li><a href="#">Quality Check</a></li>
+
+            </ol>
+
+
+            <div class="text-right div-rul" style="margin-top: 0px!important;">
+                {{--<a href="{{url('admin/addview')}}" class="btn btn-space btn-primary">Create Instrument</a>--}}
+                {{--<a href="{{url('admin/customerExport/'.$customerId)}}" class="btn btn-space btn-primary">Export</a>--}}
+                {{--<a href="#" class="btn btn-space btn-primary">Go Back</a>--}}
+
+
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="row styleforsearch">
+                <div class="panel panel-default keywordsearchpanel">
+
+                    <div class="panel-body">
+
+
+                        <form action="#" method="post">
+                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                            <div class="col-md-4">
+                                <div class="form-group">
+
+                                    <input type="text" id="keywordsearch" name="keyword" placeholder="Enter Keyword "
+                                           class="form-control" value="{!! $keyword !!}"
+                                           style="margin:  auto;margin-top: 6px;">
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" style='margin-top: 6px;'>
+
+                                    {{Form::select('status',$status,$statuskeyword,array('placeholder'=>'Status','class'=>'form-control'))}}
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-3" style="margin:  auto; margin-top: 8px;">
+                                <input type="submit" id="searchbtn" value="Search"
+                                       class="btn btn-space btn-primary">
+                                <a href="{{url('admin/qualitycheck')}}" id="reset"
+                                   class="btn btn-space btn-primary">Reset</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <div class="col-sm-18">
+                            <div class="widget widget-fullwidth widget-small">
+
+                                <div class="flash-message">
+                                    @include('notification/notification')
+                                </div>
+
+
+                                <div class="sms-table-list" id="pageResult">
+
+                                    <div class="table-responsive noSwipe">
+                                        <table class="table table-striped table-fw-widget table-hover">
+
+                                            <thead>
+                                            <tr>
+
+                                                <th></th>
+                                                <th>Work Order Number</th>
+                                                <th>Customer Name</th>
+                                                <th>Plan Name</th>
+                                                <th>Request Number</th>
+                                                <th>Maintanence To</th>
+                                                <th>Calibrated To</th>
+                                                <th>Status</th>
+                                                <th>Work Order Date</th>
+                                                <th></th>
+                                                {{--<th></th>--}}
+
+
+                                            </tr>
+                                            </thead>
+                                            @if($data)
+                                                @foreach($data as $row)
+
+                                                    <tbody>
+
+                                                    <tr>
+                                                        <td>
+                                                      <span class="lead_numbers">
+                                                   <a href="javascript:void(0)" title="Work Order Items"
+                                                      id="workOrderItems"
+                                                      rel="{{$row['workOrderId']}}"
+                                                      data-toggle="collapse"
+                                                      data-target="#workOrderDetail{{$row['workOrderId']}}"
+                                                      data-id="{{$row['workOrderId']}}"
+                                                      class="accordion-toggle hov"
+                                                   ><i
+                                                               class="fa fa-plus-circle ordericon"
+                                                               data-widget-collapsed="true"></i> <span
+                                                               class="menu-item-parent"></span></a>
+                                                      </span>
+                                                        </td>
+
+                                                        <td>{{$row['workOrderNumber']}}</td>
+                                                        <td>{{$row['customer_name']}}</td>
+                                                        <td>{{$row['planName']}}</td>
+                                                        {{--<td>{{$row['workAsFound']}}</td>--}}
+                                                        {{--<td>{{$row['workAsCalibrated']}}</td>--}}
+                                                        <td>{{$row['reqNumber']}}</td>
+                                                        <td>{{$row['maintaainedBy']}}</td>
+                                                        <td>{{$row['calibratedBy']}}</td>
+                                                        <td>
+
+                                                            @if($row['workProgress'] == 3)
+                                                                <span class="label label-success">Complete</span>
+                                                            @elseif($row['workProgress'] == 2)
+                                                                <span class="label label-danger">Progress</span>
+                                                            @endif
+
+                                                        </td>
+                                                        <td>{{Carbon\Carbon::parse($row['workOrderDate'])->add(new DateInterval('PT5H'))->add(new DateInterval('PT30M'))->format('j-M-Y')}}</td>
+                                                     @if($row['workProgress']==3)
+                                                         @if($row['admin_review'])
+                                                        <td>
+
+                                                            <a href="{{url('public/report/consolidate/adminreview/'.$row['report'])}}"
+                                                               class="btn btn-space btn-primary"
+                                                               id="viewDetails"><i class=''
+                                                                                   aria-hidden="true">Qc review</i></a>
+                                                        </td>
+                                                             @else
+                                                                <td>
+
+                                                                    <a href="{{url('admin/qcReview/'.$row['workOrderId'])}}"
+                                                                       class="btn btn-space btn-primary"
+                                                                       id="viewDetails"><i class=''
+                                                                                           aria-hidden="true">Qc review</i></a>
+                                                                </td>
+                                                            @endif
+                                                        @endif
+                                                        {{--<td>--}}
+                                                            {{--@if($row['technicianReview'] != '')--}}
+                                                                {{--<a download=""--}}
+                                                                 {{--href="" data-toggle="modal" data-target="#form-bp1"--}}
+                                                                   {{--id="view" class=" btn-lg"><i--}}
+                                                                            {{--class="fa fa-eye"></i></a>--}}
+
+
+                                                                {{--<a href=""--}}
+                                                                   {{--class="btn btn-space btn-primary"--}}
+                                                                   {{--id="viewDetails"><i class=''--}}
+                                                                                       {{--aria-hidden="true">Review--}}
+                                                                        {{--PDF</i></a>--}}
+
+                                                            {{--@endif--}}
+                                                        {{--</td>--}}
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="12" class="hiddenRow">
+                                                            <div class="accordian-body collapse"
+                                                                 id="workOrderDetail{{$row['workOrderId']}}">
+                                                                <table id="dt_basic"
+                                                                       class="table table-striped table-bordered table-hover"
+                                                                       width="100%">
+                                                                    <thead>
+
+                                                                    <th>Asset Number</th>
+                                                                    <th>Serial Number</th>
+                                                                    <th>Reviewed Technician</th>
+                                                                    <th>View PDF</th>
+                                                                    <th>Review PDF</th>
+                                                                    </thead>
+                                                                    <tbody class="workOrderItemBody-{{$row['workOrderId']}}">
+                                                                    </tbody>
+                                                                </table>
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                @endforeach
+
+                                        </table>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+
+                                <div class="panel-body">
+                                    <div class="text-right">
+                                        {{$data->links()}}
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="{{asset('js/jquery.js')}}"></script>
+    <script src="{{asset('js/underscore/underscore.js')}}"></script>
+    <script type="text/javascript">
+        $('body').on('click', '#workOrderItems', function () {
+            var workOrderId = $(this).attr('rel');
+
+            $.ajax({
+                type: "GET",
+                data: {workOrderId: workOrderId},
+                url: "{{url("admin/getqualityWorkOrderItems")}}",
+                dataType: "JSON",
+                success: function (json) {
+                    if (json.result) {
+                        var template = jQuery("#workOrderItemDetails").html();
+                        $('.workOrderItemBody-' + workOrderId).html(_.template(template, {data: json.data}));
+
+                    } else {
+                        alert('something went wrong')
+                    }
+                }
+            });
+
+
+        });
+
+    </script>
+
+    <script type="text/html" id="workOrderItemDetails">
+        <%
+        _.each(data, function(referredbymembers , index) { %>
+        <tr id="<%= referredbymembers['request_item_id'] %>" class="product-list index">
+
+
+        <td class="hidden-phone"><%=referredbymembers['assetNumber']%>
+
+        </td>
+        <td class="hidden-phone"><%= referredbymembers['serialNumber'] %>
+
+        </td>
+         <td class="hidden-phone"><%= referredbymembers['reviewdTechnician'] %>
+
+        </td>
+        <td>
+           <%
+                if(referredbymembers['report']){
+                %>
+
+
+<a download="<%= referredbymembers['report'] %>"
+                       href="<%= referredbymembers['doclink'] %>" class="btn btn-space btn-primary"
+                                                                   id="viewDetails"><i class=''
+                                                                                       aria-hidden="true">View
+                                                                        PDF</i></a>
+
+
+
+
+                <%
+                }
+
+                %>
+
+                </td>
+
+                                                        <td>
+
+                                                        <a href="<%= referredbymembers['reviewlink'] %>"
+                                                               class="btn btn-space btn-primary"
+                                                               id="viewDetails"><i class=''
+                                                                                   aria-hidden="true">Review
+                                                                    PDF</i></a>
+                                                        </td>
+
+
+    </tr>
+    <%
+    {{--i++;--}}
+    }); %>
+</script>
+@stop
+

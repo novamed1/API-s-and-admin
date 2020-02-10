@@ -1,0 +1,432 @@
+<?php
+namespace App\Http\Controllers\web\paymentmanagement;
+
+
+use App\Http\Controllers\Controller;
+use App\Models\Devicemodel;
+use App\Models\Sentinel\User;
+use App\Models\Payment;
+use App\Models\Equipment;
+use Illuminate\Http\Request;
+use Session;
+use DB;
+use Input;
+use Response;
+use Validator;
+use View;
+use DateInterval;
+use Carbon\Carbon;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Fpdf;
+//use App\Classes\fpdf17\fpdf;
+
+class PDF extends Fpdf {
+
+// Page header
+    var $left = 10;
+    var $right = 10;
+    var $top = 10;
+    var $bottom = 10;
+
+
+
+// Page footer
+
+
+    // Create Table
+    function WriteTable($tcolums) {
+        // go through all colums
+        for ($i = 0; $i < sizeof($tcolums); $i++) {
+            $current_col = $tcolums[$i];
+            $height = 0;
+
+            // get max height of current col
+            $nb = 0;
+            for ($b = 0; $b < sizeof($current_col); $b++) {
+                // set style
+               Fpdf::SetFont($current_col[$b]['font_name'], $current_col[$b]['font_style'], $current_col[$b]['font_size']);
+                $color = explode(",", $current_col[$b]['fillcolor']);
+                Fpdf::SetFillColor($color[0], $color[1], $color[2]);
+                $color = explode(",", $current_col[$b]['textcolor']);
+                Fpdf::SetTextColor($color[0], $color[1], $color[2]);
+                $color = explode(",", $current_col[$b]['drawcolor']);
+                Fpdf::SetDrawColor($color[0], $color[1], $color[2]);
+                Fpdf::SetLineWidth($current_col[$b]['linewidth']);
+
+                $nb = max($nb, Fpdf::NbLines($current_col[$b]['width'], $current_col[$b]['text']));
+                $height = $current_col[$b]['height'];
+            }
+            $h = $height * $nb;
+
+            // Issue a page break first if needed
+            Fpdf::CheckPageBreak($h);
+
+            // Draw the cells of the row
+            for ($b = 0; $b < sizeof($current_col); $b++) {
+                $w = $current_col[$b]['width'];
+                $a = $current_col[$b]['align'];
+
+                // Save the current position
+                $x = Fpdf::GetX();
+                $y = Fpdf::GetY();
+
+                // set style
+                Fpdf::SetFont($current_col[$b]['font_name'], $current_col[$b]['font_style'], $current_col[$b]['font_size']);
+                $color = explode(",", $current_col[$b]['fillcolor']);
+                Fpdf::SetFillColor($color[0], $color[1], $color[2]);
+                $color = explode(",", $current_col[$b]['textcolor']);
+                Fpdf::SetTextColor($color[0], $color[1], $color[2]);
+                $color = explode(",", $current_col[$b]['drawcolor']);
+                Fpdf::SetDrawColor($color[0], $color[1], $color[2]);
+                Fpdf::SetLineWidth($current_col[$b]['linewidth']);
+                $color = explode(",", $current_col[$b]['fillcolor']);
+                Fpdf::SetDrawColor($color[0], $color[1], $color[2]);
+
+                // Draw Cell Background
+                Fpdf::Rect($x, $y, $w, $h, 'FD');
+
+                $color = explode(",", $current_col[$b]['drawcolor']);
+                Fpdf::SetDrawColor($color[0], $color[1], $color[2]);
+
+                // Draw Cell Border
+                if (substr_count($current_col[$b]['linearea'], "T") > 0) {
+                    Fpdf::Line($x, $y, $x + $w, $y);
+                }
+
+                if (substr_count($current_col[$b]['linearea'], "B") > 0) {
+                    Fpdf::Line($x, $y + $h, $x + $w, $y + $h);
+                }
+
+                if (substr_count($current_col[$b]['linearea'], "L") > 0) {
+                    Fpdf::Line($x, $y, $x, $y + $h);
+                }
+
+                if (substr_count($current_col[$b]['linearea'], "R") > 0) {
+                    Fpdf::Line($x + $w, $y, $x + $w, $y + $h);
+                }
+
+                // Print the text
+                Fpdf::MultiCell($w, $current_col[$b]['height'], $current_col[$b]['text'], 0, $a, 0);
+
+                // Put the position to the right of the cell
+                Fpdf::SetXY($x + $w, $y);
+            }
+
+            // Go to the next line
+            Fpdf::Ln($h);
+        }
+    }
+
+    // Computes the number of lines a MultiCell of width w will take
+
+
+    // If the height h would cause an overflow, add a new page immediately
+
+
+
+
+
+
+    function AutoPrintToPrinter($server, $printer, $dialog = false) {
+        //Print on a shared printer (requires at least Acrobat 6)
+        $script = "var pp = getPrintParams();";
+        if ($dialog)
+            $script .= "pp.interactive = pp.constants.interactionLevel.full;";
+        else
+            $script .= "pp.interactive = pp.constants.interactionLevel.automatic;";
+        $script .= "pp.printerName = '\\\\\\\\" . $server . "\\\\" . $printer . "';";
+        $script .= "print(pp);";
+        $this->IncludeJS($script);
+    }
+
+}
+
+class InvoiceController extends controller
+{
+    public function __construct()
+    {
+
+        $this->equipment = new Equipment();
+        $this->frequency = new Devicemodel();
+        $this->payment = new Payment();
+    }
+
+    public function index(Request $request,$id)
+    {
+
+        $get = Input::all();
+        $comments['comments'] = $get['comments'];
+
+        DB::table('tbl_purchase_order')->where('id', $get['id'])->update($comments);
+
+       $purchase = $this->payment->orderDetails($id);
+      // print_r($purchase);die;
+       if($purchase)
+       {
+           $billingAddress = $this->payment->serviceBillAddress($purchase->request_id);
+           $shippingAddress = $this->payment->serviceShippingAddress($purchase->request_id);
+           $totalReceived = $this->payment->totalRequestItems($purchase->request_id);
+           $totalReturned = $this->payment->totalOrderItems($id);
+           $setups = $this->payment->setups($purchase->customer_id);
+           $select = array('OI.order_item_amt','E.asset_no', 'E.serial_no', 'E.pref_contact',
+               'E.pref_tel', 'E.pref_email', 'E.location',
+               'EM.model_name');
+           $orderItems = $this->payment->orderItems($id,array('select' => $select));
+       }
+
+        $pdf = new pdf('P', 'ms', 'A4');
+        Fpdf::AliasNbPages();
+        Fpdf::SetMargins(10, 10, 10);
+        Fpdf::AddPage();
+
+        Fpdf::SetFont('Arial', 'B', 7);
+        Fpdf::SetDrawColor(255, 255,255);
+        Fpdf::Rect(18, 25, 47, 35);
+
+
+        Fpdf::SetXY(18, 25);
+        Fpdf::SetX(18);
+        Fpdf::Cell(47, 5, 'NOVAMED INC,', 0, 1, 'L');
+        Fpdf::SetFont('Arial', '', 7);
+        Fpdf::SetX(18);
+        Fpdf::Cell(47, 5, '8136 LAWNDALE AVE., SKOKIE,', 0, 1, 'L');
+        Fpdf::SetX(18);
+        Fpdf::Cell(47, 5, 'IL 60076-3413,', 0, 1, 'L');
+        Fpdf::SetX(18);
+        Fpdf::Cell(47, 5, 'TEL: 1-800-354-6676,', 0, 1, 'L');
+        Fpdf::SetX(18);
+        Fpdf::Cell(47, 5, 'FAX:1-847-675-3322', 0, 1, 'L');
+        Fpdf::SetX(18);
+        Fpdf::Cell(47, 5, 'email: support@novamed1.com', 0, 1, 'L');
+
+        $fill_col = "0,0,0";
+        $fontSize = "7";
+        $fontName = "Arial";
+        $textColor = "0,0,0";
+        $drawColor = "0,0,0";
+        $fillColor = "255,255,255";
+
+        Fpdf::SetXY(88, 25);
+        $table = array();
+       
+        //$pdf->SetXY(78, 25);
+        $cols = array();
+        $cols[] = array('text' => 'Total Pipettes', 'width' => '20', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => $totalReturned, 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        Fpdf::SetLeftMargin(88);
+
+        $pdf->WriteTable($table);
+
+        $cityState = isset($billingAddress->city)?$billingAddress->city:'' . ',' . isset($billingAddress->state)?$billingAddress->state:'' . ',' . isset($billingAddress->zip_code)?$billingAddress->zip_code:'';
+
+        Fpdf::SetFont('Arial', 'B', 7);
+        //   $pdf->SetDrawColor(255, 255,255);
+        Fpdf::Rect(138, 25, 67, 35);
+        Fpdf::SetXY(138, 25);
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, 'BILL TO:', 0, 1, 'L');
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, ucwords(isset($billingAddress->billing_contact)?$billingAddress->billing_contact:''), 0, 1, 'L');
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, isset($billingAddress->address1)?$billingAddress->address1:'', 0, 1, 'L');
+        Fpdf::SetFont('Arial', '', 7);
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, isset($billingAddress->address2)?$billingAddress->address2:'', 0, 1, 'L');
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, $cityState, 0, 1, 'L');
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, 'TEL:'.isset($billingAddress->phone)?$billingAddress->phone:'', 0, 1, 'L');
+        Fpdf::SetX(138);
+        Fpdf::Cell(67, 5, 'FAX:'.isset($billingAddress->fax)?$billingAddress->fax:'', 0, 1, 'L');
+
+        $cityState1 = isset($shippingAddress->city)?$shippingAddress->city:'' . ',' . isset($shippingAddress->state)?$shippingAddress->state:''. ',' .isset($shippingAddress->zip_code)?$shippingAddress->zip_code:'';
+
+        Fpdf::SetFont('Arial', 'B', 7);
+        //   $pdf->SetDrawColor(255, 255,255);
+        Fpdf::Rect(218, 25, 67, 35);
+        Fpdf::SetXY(218, 25);
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, 'SHIP TO:', 0, 1, 'L');
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, ucwords($shippingAddress->customer_name), 0, 1, 'L');
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, $shippingAddress->address1, 0, 1, 'L');
+        Fpdf::SetFont('Arial', '', 7);
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, $shippingAddress->address2, 0, 1, 'L');
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, $cityState1, 0, 1, 'L');
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, '', 0, 1, 'L');
+        Fpdf::SetX(218);
+        Fpdf::Cell(67, 5, 'TEL:'.$shippingAddress->phone_num, 0, 1, 'L');
+
+        $Y =Fpdf::GetY() + 5; //print_r($Y);die;
+
+        Fpdf::SetXY(18, $Y);
+        $table = array();
+        $cols = array();
+        $cols[] = array('text' => 'Customer ID', 'width' => '25', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => '', 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => 'Payment Type', 'width' => '20', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => ucfirst($setups->name), 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => 'Term', 'width' => '17', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => $setups->pay_terms, 'width' => '20', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        //$pdf->SetXY(78, 25);
+        $cols = array();
+        $cols[] = array('text' => 'Service Location', 'width' => '25', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => '', 'width' => '50', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => 'Ship Date', 'width' => '17', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => date('M-d-Y', strtotime(str_replace('/', '-', $billingAddress->service_schedule_date))), 'width' => '20', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        Fpdf::SetLeftMargin(18);
+        $pdf->WriteTable($table);
+
+        Fpdf::SetXY(138, $Y);
+        $table = array();
+        $cols = array();
+        $cols[] = array('text' => 'WORK ORDER', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => '', 'width' => '37', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        //$pdf->SetXY(78, 25);
+        $cols = array();
+        $cols[] = array('text' => 'PURCHASE ORDER', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => '', 'width' => '37', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        Fpdf::SetLeftMargin(138);
+        $pdf->WriteTable($table);
+
+        Fpdf::SetXY(218, $Y);
+        $table = array();
+        $cols = array();
+        $cols[] = array('text' => 'SERVICE REQUEST', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => $billingAddress->request_no, 'width' => '37', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        //$pdf->SetXY(78, 25);
+        $cols = array();
+        $cols[] = array('text' => 'SERVICE DATE', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $cols[] = array('text' => date('M-d-Y', strtotime(str_replace('/', '-', $billingAddress->service_schedule_date))), 'width' => '37', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTBR');
+        $table[] = $cols;
+        Fpdf::SetLeftMargin(218);
+        $pdf->WriteTable($table);
+
+        Fpdf::SetXY(18, Fpdf::GetY()+4);
+
+        $table = array();
+        $cols = array();
+        $cols[] = array('text' => 'Line#', 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Catalogue#', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Item#', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Serial#', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Description', 'width' => '90', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Qty', 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Price', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $cols[] = array('text' => 'Ext.Amount', 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => 'B', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'LTR');
+        $table[] = $cols;
+        $cols = array();
+        $cols[] = array('text' => '', 'width' => '270', 'height' => '1', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'T');
+        $table[] = $cols;
+
+
+        $i = 0;
+
+        $totalPrice = 0;
+
+
+        foreach ($orderItems as $value) {
+
+
+            $cols = array();
+            $cols[] = array('text' => $i + 1, 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => $value->asset_no, 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => $value->asset_no, 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => $value->serial_no, 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => $value->model_name, 'width' => '90', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => '1', 'width' => '15', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => '$ '.number_format($value->order_item_amt,2), 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $cols[] = array('text' => '$ '.number_format($value->order_item_amt,2), 'width' => '30', 'height' => '5', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => '');
+            $table[] = $cols;
+
+            $totalPrice += $value->order_item_amt;
+
+            $i++;
+        }
+
+        Fpdf::SetLeftMargin(18);
+        $pdf->WriteTable($table);
+
+        Fpdf::SetXY(18, Fpdf::GetY()+1);
+        $table = array();
+        $cols = array();
+        $cols[] = array('text' => '', 'width' => '270', 'height' => '1', 'align' => 'L', 'font_name' => $fontName, 'font_size' => $fontSize, 'font_style' => '', 'fillcolor' => $fillColor, 'textcolor' => '0,0,0', 'drawcolor' => $drawColor, 'linewidth' => '0.1', 'linearea' => 'T');
+
+        $table[] = $cols;
+        Fpdf::SetLeftMargin(18);
+
+        $pdf->WriteTable($table);
+
+        $footer = Fpdf::GetY();
+
+        $note = $purchase->comments;
+
+        // $pdf->Rect(18, $footer, 67, $footer);
+        Fpdf::SetFont('Arial', '', 7);
+        Fpdf::SetXY(18, $footer);
+        Fpdf::SetX(18);
+        Fpdf::MultiCell(157, 5, 'Comments', 0, 'L');
+        Fpdf::SetX(18);
+        Fpdf::MultiCell(157, 5, $note, 0, 'L');
+
+        Fpdf::SetXY(208, $footer);
+        Fpdf::SetX(208);
+        Fpdf::MultiCell(30, 5, 'Sub Total', 0, 'L');
+        Fpdf::SetXY(238,$footer);
+        Fpdf::MultiCell(30, 5, '$ '.number_format($totalPrice, 2), 0,  'R');
+        Fpdf::SetXY(208, $footer+7);
+        Fpdf::SetX(208);
+        Fpdf::MultiCell(30, 5, 'Shipping & Handling', 0, 'L');
+        Fpdf::SetXY(238,$footer+7);
+        Fpdf::MultiCell(30, 5, '$ 0.00', 0, 'R');
+        Fpdf::SetXY(208, $footer+14);
+        Fpdf::SetX(208);
+        Fpdf::MultiCell(30, 5, 'Sales Tax', 0, 'L');
+        Fpdf::SetXY(238,$footer+14);
+        Fpdf::MultiCell(30, 5, '$ 0.00', 0, 'R');
+        Fpdf::SetXY(208, $footer+21);
+        Fpdf::SetX(208);
+        Fpdf::MultiCell(30, 5, 'TOTAL', 0, 'L');
+        Fpdf::SetXY(238,$footer+21);
+        Fpdf::SetFont('Arial', 'B', 7);
+        Fpdf::MultiCell(30, 5, '$ '.number_format($totalPrice, 2), 0, 'R');
+        $path = base_path().'/public/purchaseorder/invoices';
+        Fpdf::Output($path.'/'.$purchase->order_number.'.pdf','F');
+
+        $save['id'] = $purchase->id;
+        $save['invoice_generation'] = 1;
+        $save['invoice_file'] = $purchase->order_number.'.pdf';
+        $this->payment->saveorder($save);
+
+
+
+        Fpdf::Output();die;
+    }
+
+
+    function openinvoice(Request $request,$id)
+    {
+        if($id)
+        {
+            $order = $this->payment->orderDetails($id);
+            if($order)
+            {
+                $pathToFile = base_path().'/public/purchaseorder/invoices/'.$order->invoice_file;
+                return response()->file($pathToFile);
+            }
+        }
+    }
+
+
+}

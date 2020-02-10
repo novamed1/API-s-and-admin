@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Http\Controllers\web;
+
+use App\Http\Controllers\Controller;
+use App\Models\Sentinel\User;
+use App\Models\Customertype;
+use App\Models\ServicePlan;
+use Illuminate\Http\Request;
+use App\Models\DueEquipments;
+use App\Models\Equipment;
+use App\Models\Channels;
+use App\Models\Customer;
+use Session;
+use DB;
+use Input;
+use Response;
+use Validator;
+use View;
+use Excel;
+use Carbon\Carbon;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+//use Request;
+
+class DueEquipmentController extends Controller
+{
+
+    public function __construct()
+    {
+        $this->equipment = new Equipment();
+        $this->dueequipments = new DueEquipments();
+        $this->customer = new Customer();
+        $this->servicePlan = new ServicePlan();
+        $this->channel = new Channels();
+    }
+
+    public function index(Request $request)
+    {
+        $input = Input::all();
+        $title = 'Novamed-Equipment';
+        $keyword = isset($input['keyword']) ? $input['keyword'] : '';
+        $due_status = array('' => '', 1 => "Past", 2 => 'Current month', 3 => 'Upcoming');
+        $customer = DB::table('tbl_customer')->pluck('customer_name', 'customer_name');
+        $customer->prepend('');
+        return view('dueequipments.dueequipmentlist')->with('title', $title)->with('keyword', $keyword)->with('due_status', $due_status)->with('customer', $customer);
+    }
+
+    function listData(Request $request)
+    {
+        $input = Input::all();
+        $param = array();
+        $param['limit'] = $input['iDisplayLength'];
+        $param['offset'] = $input['iDisplayStart']; //echo'<pre>';print_r($input);'</pre>';die;
+        $search['C.customer_name'] = isset($input['sSearch_0']) ? $input['sSearch_0'] : '';
+        $search['E.asset_no'] = isset($input['sSearch_1']) ? $input['sSearch_1'] : '';
+        $search['E.serial_no'] = isset($input['sSearch_2']) ? $input['sSearch_2'] : '';
+        $search['EM.model_description'] = isset($input['sSearch_3']) ? $input['sSearch_3'] : '';
+        $search['E.location'] = isset($input['sSearch_4']) ? $input['sSearch_4'] : '';
+        $search['E.pref_contact'] = isset($input['sSearch_5']) ? $input['sSearch_5'] : '';
+        $search['E.pref_tel'] = isset($input['sSearch_6']) ? $input['sSearch_6'] : '';
+//        $search['DATE_FORMAT(`DE`.`last_cal_date`,"%d-%M-%Y")'] = isset($input['sSearch_7']) ? $input['sSearch_7'] : '';
+//        $search['DATE_FORMAT(`DE`.`next_due_date`,"%d-%M-%Y")'] = isset($input['sSearch_8']) ? $input['sSearch_8'] : '';
+        $search['DE.last_cal_date'] = isset($input['sSearch_7']) ? $input['sSearch_7'] : '';
+        $search['DE.next_due_date'] = isset($input['sSearch_8']) ? $input['sSearch_8'] : '';
+        $search['due_status'] = isset($input['sSearch_9']) ? $input['sSearch_9'] : '';
+
+//        echo '<pre>';print_r($search);
+
+
+        //echo'<pre>';print_r($search);'</pre>';die;
+        $select = array('DE.id', 'E.asset_no', 'E.serial_no', 'EM.model_description', 'E.location', 'E.pref_contact', 'E.pref_tel', 'DE.last_cal_date', 'DE.next_due_date', 'C.customer_name');
+        $data = $this->dueequipments->AllDueEquipmentsGrid($param['limit'], $param['offset'], 'DE.id', 'DESC', array('select' => $select, 'search' => $search, 'admin' => 1),
+            false);
+
+        $count = $this->dueequipments->AllDueEquipmentsGrid($param['limit'], $param['offset'], 'DE.id', 'DESC', array('select' => $select, 'search' => $search, 'admin' => 1, 'count' => true),
+            true);
+        if ($data) {
+            $values = array();
+            $i = 0;
+            foreach ($data as $key => $row) {
+                if ($row->next_due_date <= date('Y-m-d', strtotime('last day of previous month'))) {
+                    $due_status = '<span class="label label-danger">Past</span>';
+//                } elseif($search['due_status'] == 2){
+                } elseif($row->next_due_date <=  Carbon::now()->toDateString()){
+                    $due_status = '<span class="label label-warning">Current month</span>';
+                } else {
+                    $due_status = '<span class="label label-success">upcoming</span>';
+                }
+                $values[$key]['0'] = $row->customer_name;
+                $values[$key]['1'] = $row->asset_no;
+                $values[$key]['2'] = $row->serial_no;
+                $values[$key]['3'] = $row->model_description;
+                $values[$key]['4'] = $row->location;
+                $values[$key]['5'] = $row->pref_contact;
+                $values[$key]['6'] = $row->pref_tel;
+                $values[$key]['7'] = date('m-d-Y', strtotime(str_replace('/', '-', $row->last_cal_date)));
+                $values[$key]['8'] = date('m-d-Y', strtotime(str_replace('/', '-', $row->next_due_date)));
+                $values[$key]['9'] = $due_status;
+                $i++;
+            }
+
+        }
+        //echo'<pre>';print_r($data);'</pre>';die;
+        echo json_encode(array('sEcho' => $input['sEcho'], 'iTotalRecords' => $count, 'iTotalDisplayRecords' => $count, 'aaData' => $values));
+
+    }
+
+
+}

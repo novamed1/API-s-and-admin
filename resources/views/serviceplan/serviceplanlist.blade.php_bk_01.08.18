@@ -1,0 +1,210 @@
+@extends('layout.header')
+@section('content')
+
+    <div class="am-content">
+        <div class="page-head">
+            <h2>Service Plan List </h2>
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Master SetUp</a></li>
+                <li><a href="#">Service Plan List</a></li>
+            </ol>
+            <div class="text-right div-rul">
+                <a href="{{url('admin/serviceplan')}}" class="btn btn-space btn-primary">Create Service Plan</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="row styleforsearch">
+                <div class="panel panel-default keywordsearchpanel">
+
+                    <div class="panel-body">
+
+
+                        <form action="{{url('admin/servicelist')}}" method="post">
+                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                            <div class="col-md-9">
+                                <div class="form-group">
+
+                                    <input type="text" id="keywordsearch" name="keyword"
+                                           placeholder="Enter Service Plan"
+                                           class="form-control" value="{{isset($keyword) ? $keyword : ''}}" style="margin:  auto;margin-top: 6px;">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3" style="margin:  auto; margin-top: 8px;">
+                                <input type="submit" id="searchbtn" value="Search"
+                                       class="btn btn-space btn-primary">
+                                <a href="{{url('admin/servicelist')}}" class="btn btn-primary">Reset</a>
+
+
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                            <div class="widget widget-fullwidth widget-small">
+
+                                <div class="flash-message">
+                                    @include('notification/notification')
+                                </div>
+                                <div class="col-md-9 col-sm-9" id="Result" style='display:none;text-align: center;'>
+
+                                    <span>No result found</span>
+                                </div>
+                                @if($data)
+
+                                    <div class="sms-table-list" id="pageResult">
+
+                                        <div class="table-responsive noSwipe">
+                                            <table class="table table-striped table-fw-widget">
+
+                                                <thead>
+                                                <tr>
+                                                    {{--<th></th>--}}
+                                                    <th>Plan Name</th>
+                                                    <th>Product Type</th>
+                                                    <th>As Found</th>
+
+
+                                                    <th>As Calibrated</th>
+                                                    <th>Pricing Criteria</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                                </thead>
+
+                                                @foreach($data as $value)
+                                                    <tbody>
+
+                                                    <tr class="">
+
+                                                        <td>{{$value['planName']}}</td>
+                                                        <td>{{$value['productType']}}</td>
+                                                        <td>{{$value['asFoundStatus']}}</td>
+                                                        <td>{{$value['asCalibrateStatus']}}</td>
+                                                        <td>
+                                                            <a href="" data-toggle="modal" data-target="#form-bp1"
+                                                               id="view" data-id="{{$value['planId']}}" class=" btn-lg"><i
+                                                                        class="fa fa-eye"></i></a>
+
+
+                                                        </td>
+
+                                                        <td>
+                                                            <a href="{{url('admin/editServicePlan/'.$value['planId'])}}"
+                                                               class="btn btn-space btn-primary"><i
+                                                                        class="fa fa-pencil"></i></a>
+
+                                                        </td>
+
+
+                                                    </tr>
+
+
+                                                    </tbody>
+                                                @endforeach
+
+
+                                            </table>
+                                            @endif
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="panel panel-default">
+
+                                <div class="panel-body">
+                                    <div class="text-right">
+                                        {{$data->links()}}
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="form-bp1" tabindex="-1" role="dialog" class="modal fade modal-colored-header">
+        <div class="modal-dialog custom-width">
+            <form id="rejected" action="" method="get">
+
+                <div class="modal-content" id="result">
+                    <div class="modal-header">
+                        <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><i
+                                    class="icon s7-close"></i></button>
+                        <h3 class="modal-title">Pricing Criteria</h3>
+                    </div>
+
+                    <div class="modal-body">
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-danger md-close" id="closemodel">
+                            Cancel
+                        </button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="{{asset('js/jquery.js')}}"></script>
+    <script type="text/javascript">
+
+
+        $('body').on('click', '#view', function () {
+            var Id = $(this).attr('data-id');
+            console.log(Id)
+            $.ajax({
+                type: "GET",
+                url: '{{url("admin/viewServicePlan")}}',
+                data: {
+                    "_token": "{!! csrf_token() !!}",
+                    Id: Id
+                },
+                dataType: "json",
+                success: function (data) {
+                    $('#result').find('.modal-body').html(data.formData);
+                    $('.popUp').trigger('click');
+//
+                }
+            });
+        });</script>
+
+    {{--<style type="text/css">--}}
+
+    {{--.service-details-modal p.mod-service-img {--}}
+    {{--position: absolute;--}}
+    {{--padding: 0;--}}
+    {{--}--}}
+
+    {{--.service-details-modal h5 {--}}
+
+    {{--font-size: 18px;--}}
+    {{--margin-bottom: 5px;--}}
+    {{--}--}}
+
+    {{--.service-details-modal p {--}}
+    {{--margin-bottom: 10px;--}}
+    {{--}--}}
+
+    {{--</style>--}}
+
+@stop

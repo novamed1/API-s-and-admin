@@ -1,0 +1,602 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException as QueryException;
+use DB;
+use Input;
+use Carbon\Carbon;
+use DateTime;
+
+class Payment extends Model
+{
+    protected $table = 'tbl_purchase_order';
+
+    public function saveorder($input)
+    {
+//echo '<pre>';print_r($input);exit;
+        if ($input['id']) {
+            $input['modified_on'] = Carbon::now()->toDateTimeString();
+            $result = DB::table('tbl_purchase_order')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_on'] = Carbon::now()->toDateTimeString();
+
+            $result = DB::table('tbl_purchase_order')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function saveitems($input)
+    {
+
+        if ($input['id']) {
+            $input['modified_on'] = Carbon::now()->toDateTimeString();
+            $result = DB::table('tbl_purchase_order_items')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_on'] = Carbon::now()->toDateTimeString();
+
+            $result = DB::table('tbl_purchase_order_items')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function savestatus($input)
+    {
+
+        if ($input['id']) {
+            $input['modified_date'] = Carbon::now()->toDateTimeString();
+            $result = DB::table('tbl_service_request_item')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_date'] = Carbon::now()->toDateTimeString();
+
+            $result = DB::table('tbl_service_request_item')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function getPrice($id,$cond)
+    {
+        $query = DB::table('tbl_service_request_item as i');
+        $query->join('tbl_service_pricing as p','p.id','=','i.service_price_id');
+        $query->where('i.id',$id);
+        $query->select($cond['select']);
+        $result = $query->first();
+        return $result;
+
+    }
+
+    public  function getRequest($id)
+    {
+        $query = DB::table('tbl_service_request');
+        $query->where('request_no',$id);
+        $result = $query->first();
+        return $result;
+
+    }
+
+    public function getAllPurchaseOrders($limit = 0, $offset = 0,$order_by = 'PO.id', $direction = 'DESC', $cond = array())
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order as PO');
+        if ($limit > 0) {
+            $query->limit($limit);
+            $query->offset($offset);
+        }
+        if (isset($cond['search']) && $cond['search'] != '') {
+
+            $likeArrayFields = array('PO.order_number','PO.total_items','PO.order_amt','SR.request_no','U.name');
+            if (!empty($likeArrayFields)) {
+
+                $flag = true;
+                $like = '';
+                foreach ($likeArrayFields as $value) {
+                    if ($flag) {
+
+                        $like .= $value . " LIKE '%" . trim($cond['search']['keyword']) . "%' ";
+                    } else {
+                        $like .= " AND " . $value . " LIKE '%" . trim($cond['search']['keyword']) . "%' ";
+                    }
+                    $flag = false;
+                }
+                $query->whereRaw('(' . $like . ')');
+            }
+        }
+        if(isset($cond['role_id']) && $cond['role_id'] == 1)
+        {
+            if (isset($cond['cus_id']) && $cond['cus_id'] != '') {
+                $query->where('PO.customer_id', $cond['cus_id']);
+            }
+        }
+        else
+        {
+            if (isset($cond['user_id']) && $cond['user_id'] != '') {
+                $query->where('PO.created_by', $cond['user_id']);
+            }
+
+        }
+
+        if (isset($cond['withorder']) && $cond['withorder'] != '') {
+            $query->where('PO.order_flg', 1);
+        }
+
+        if (isset($cond['payment']) && $cond['payment'] != '') {
+            $query->where('PO.payment_flg', 1);
+        }
+
+
+        $query->join('tbl_service_request as SR', 'SR.id', '=', 'PO.request_id');
+        $query->join('tbl_users as U', 'U.id', '=', 'PO.created_by');
+        if(isset($cond['admin']) && $cond['admin'] != '')
+        {
+            $query->join('tbl_customer as C', 'C.id', '=', 'U.customer_id');
+        }
+        $query->orderBy($order_by, $direction);
+        $query->select($cond['select']);
+
+        $result = $query->get();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    public function getAllPurchaseOrdersGrid($limit = 0, $offset = 0,$order_by = 'PO.id', $direction = 'DESC', $cond = array(),$count)
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order as PO');
+        if ($limit > 0) {
+            if(!isset($cond['count']))
+            {
+                $query->limit($limit);
+                $query->offset($offset);
+            }
+        }
+        if (isset($cond['search']) && $cond['search'] != '') {
+//echo '<pre>';print_r($cond['search']);exit;
+            if (!empty($cond['search'])) {
+
+                $flag = true;
+                $like = '';
+                foreach ($cond['search'] as $key=>$value) {
+                    if($key == 'PO.created_on'){
+                        if($value != '') {
+                            $value = date('Y-m-d', strtotime(str_replace('-', '/', $value)));
+                        }
+                    }
+                    if($value) {
+                        if ($flag) {
+
+                            if($key=='PO.invoice_generation' && $value==2)
+                            {
+                                $like .= $key . " LIKE '%" . trim(0) . "%' ";
+                            }
+                            elseif($key=='PO.payment_flg' && $value==2)
+                            {
+                                $like .= $key . " IS NULL OR ".$key."=0";
+                            }
+                            else
+                            {
+                                $like .= $key . " LIKE '%" . trim($value) . "%' ";
+                            }
+
+
+                        } else {
+                            $like .= " AND " . $key . " LIKE '%" . trim($value) . "%' ";
+                        }
+                        $flag = false;
+                    }
+                }
+                if(array_filter($cond['search'])) {
+                    $query->whereRaw('(' . $like . ')');
+                }
+            }
+        }
+        if(isset($cond['role_id']) && $cond['role_id'] == 1)
+        {
+            if (isset($cond['cus_id']) && $cond['cus_id'] != '') {
+                $query->where('PO.customer_id', $cond['cus_id']);
+            }
+        }
+        else
+        {
+            if (isset($cond['user_id']) && $cond['user_id'] != '') {
+                $query->where('PO.created_by', $cond['user_id']);
+            }
+
+        }
+
+        if (isset($cond['withorder']) && $cond['withorder'] != '') {
+            $query->where('PO.order_flg', 1);
+        }
+
+        if (isset($cond['payment']) && $cond['payment'] != '') {
+            $query->where('PO.payment_flg', 1);
+        }
+
+
+        $query->join('tbl_service_request as SR', 'SR.id', '=', 'PO.request_id');
+        $query->join('tbl_users as U', 'U.id', '=', 'PO.created_by');
+        if(isset($cond['admin']) && $cond['admin'] != '')
+        {
+            $query->join('tbl_customer as C', 'C.id', '=', 'U.customer_id');
+        }
+        $query->orderBy($order_by, $direction);
+        $query->select($cond['select']);
+
+        if (!$count) {
+            $result = $query->get();
+        } else {
+            $result = $query->count();
+        }
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    public function countpurchaseorders($limit = 0, $offset = 0, $cond = array())
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order as PO');
+        if ($limit > 0) {
+            $query->limit($limit);
+            $query->offset($offset);
+        }
+        if (isset($cond['search']) && $cond['search'] != '') {
+
+            $likeArrayFields = array('PO.order_number','PO.total_items','PO.order_amt','SR.request_no','U.name');
+            if (!empty($likeArrayFields)) {
+
+                $flag = true;
+                $like = '';
+                foreach ($likeArrayFields as $value) {
+                    if ($flag) {
+
+                        $like .= $value . " LIKE '%" . trim($cond['search']) . "%' ";
+                    } else {
+                        $like .= " AND " . $value . " LIKE '%" . trim($cond['search']) . "%' ";
+                    }
+                    $flag = false;
+                }
+                $query->whereRaw('(' . $like . ')');
+            }
+        }
+        if($cond['role_id'] == 1)
+        {
+            if (isset($cond['cus_id']) && $cond['cus_id'] != '') {
+                $query->where('PO.customer_id', $cond['cus_id']);
+            }
+        }
+        else
+        {
+            $query->where('PO.created_by', $cond['user_id']);
+        }
+
+        if (isset($cond['withorder']) && $cond['withorder'] != '') {
+            $query->where('PO.order_flg', 1);
+        }
+
+        if (isset($cond['payment']) && $cond['payment'] != '') {
+            $query->where('PO.payment_flg', 1);
+        }
+
+        $query->join('tbl_service_request as SR', 'SR.id', '=', 'PO.request_id');
+        $query->join('tbl_users as U', 'U.id', '=', 'PO.created_by');
+        $query->orderBy('PO.id', 'DESC');
+        $query->select($cond['select']);
+
+        $result = $query->count();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    public function orderItems($id,$cond)
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order_items as OI');
+        $query->join('tbl_service_request_item as SR', 'SR.id', '=', 'OI.request_item_id');
+        $query->join('tbl_service_plan as SP', 'SP.id', '=', 'SR.test_plan_id');
+        $query->join('tbl_due_equipments as DE', 'DE.id', '=', 'SR.due_equipments_id');
+        $query->join('tbl_equipment as E', 'E.id', '=', 'DE.equipment_id');
+        $query->join('tbl_equipment_model as EM', 'EM.id', '=', 'E.equipment_model_id');
+        $query->select($cond['select']);
+        $query->where('OI.order_id',$id);
+        $result = $query->get();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+///View summary API
+    public function workorderItem($id,$cond)
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_work_order_items as WOI');
+        $query->join('tbl_service_request_item as SR', 'SR.id', '=', 'WOI.request_item_id');
+        $query->join('tbl_service_plan as SP', 'SP.id', '=', 'SR.test_plan_id');
+        $query->join('tbl_due_equipments as DE', 'DE.id', '=', 'SR.due_equipments_id');
+        $query->join('tbl_service_request as S', 'S.id', '=', 'SR.service_request_id');
+        $query->join('tbl_equipment as E', 'E.id', '=', 'DE.equipment_id');
+        $query->join('tbl_equipment_model as EM', 'EM.id', '=', 'E.equipment_model_id');
+        $query->select($cond['select']);
+        $query->where('WOI.work_order_id',$id);
+        $result = $query->get();
+
+//        echo '<pre>';print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    ///View summary for service request
+    public function workorderItems($id,$cond)
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_work_order_items as WOI');
+        $query->join('tbl_service_request_item as SR', 'SR.id', '=', 'WOI.request_item_id');
+        $query->join('tbl_service_pricing as SP', 'SP.id', '=', 'SR.service_price_id');
+        $query->join('tbl_due_equipments as DE', 'DE.id', '=', 'SR.due_equipments_id');
+        $query->join('tbl_service_request as S', 'S.id', '=', 'SR.service_request_id');
+        $query->join('tbl_equipment as E', 'E.id', '=', 'DE.equipment_id');
+        $query->join('tbl_equipment_model as EM', 'EM.id', '=', 'E.equipment_model_id');
+        $query->select($cond['select']);
+        $query->where('WOI.request_item_id',$id);
+        $result = $query->first();
+
+//        echo '<pre>';print_r(DB::getQueryLog());die;
+        return $result;
+    }
+    ///View summary for service request
+    public function Servicerequestitems($id,$cond)
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_service_request_item as SR');
+//        $query->join('tbl_service_request_item as SR', 'SR.id', '=', 'WOI.request_item_id');
+        $query->join('tbl_service_pricing as SP', 'SP.id', '=', 'SR.service_price_id');
+        $query->join('tbl_due_equipments as DE', 'DE.id', '=', 'SR.due_equipments_id');
+        $query->join('tbl_service_request as S', 'S.id', '=', 'SR.service_request_id');
+        $query->join('tbl_equipment as E', 'E.id', '=', 'DE.equipment_id');
+        $query->join('tbl_equipment_model as EM', 'EM.id', '=', 'E.equipment_model_id');
+        $query->select($cond['select']);
+        $query->where('SR.id',$id);
+        $result = $query->first();
+
+//        echo '<pre>';print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+
+
+    public function orderDetails($id)
+    {
+
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order as O');
+        $query->where('O.id',$id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+    public function orderDetailsView($id)
+    {
+
+
+//        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order as O');
+        $query->join('tbl_customer as c', 'c.id', '=', 'O.customer_id');
+        $query->join('tbl_customer_setups as s', 's.customer_id', '=', 'O.customer_id', 'left');
+        $query->join('tbl_pay_method as p', 'p.id', '=', 's.pay_method', 'left');
+        $query->where('O.id', $id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+    public function customerDetails($id)
+    {
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_customer as C');
+        $query->where('C.id',$id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    public function billingDetails($id)
+    {
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_customer_billing_address as BA');
+        $query->where('BA.customer_id',$id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+    public function shippingDetails($id)
+    {
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_customer_shipping_address as SA');
+        $query->where('SA.customer_id',$id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+    public function contactDetails($id)
+    {
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_customer_contacts as CC');
+        $query->where('CC.customer_id',$id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    function serviceBillAddress($reqId)
+    {
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_service_request as SR');
+        $query->join('tbl_customer_billing_address as BA', 'BA.id', '=', 'SR.billing_address_id');
+        $query->where('SR.id',$reqId);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+    function serviceShippingAddress($reqId)
+    {
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_service_request as SR');
+        $query->join('tbl_customer_shipping_address as SA', 'SA.id', '=', 'SR.shipping_address_id');
+        $query->where('SR.id',$reqId);
+        $result = $query->first();
+        return $result;
+    }
+
+    function totalRequestItems($reqId)
+    {
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_service_request_item as RI');
+        $query->where('RI.service_request_id',$reqId);
+        $result = $query->count();
+        return $result;
+    }
+
+    function totalOrderItems($orderId)
+    {
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_purchase_order_items as OI');
+        $query->where('OI.order_id',$orderId);
+        $result = $query->count();
+        return $result;
+    }
+
+    function setups($cusId)
+    {
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_customer_setups as CS');
+        $query->join('tbl_pay_method as PM', 'PM.id', '=', 'CS.pay_method');
+        $query->where('CS.customer_id',$cusId);
+        $result = $query->first();
+        return $result;
+    }
+
+    public function savepaymentlog($input)
+    {
+
+        if ($input['id']) {
+            $result = DB::table('tbl_payment_log')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_on'] = Carbon::now()->toDateTimeString();
+
+            $result = DB::table('tbl_payment_log')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function getParts($reqItemId)
+    {
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_work_order_items as twii');
+        $query->where('twii.request_item_id', '=', $reqItemId);
+        $query->join('tbl_workorder_status_move as twsm', 'twsm.workorder_item_id', '=', 'twii.id');
+        $query->join('tbl_workorder_maintenance_log as twml', 'twml.workorder_status_id', '=', 'twsm.id');
+        $query->select('twml.*');
+        $result = $query->first();
+
+//        $query = DB::getQueryLog();
+//        print_r($query);die;
+        return $result;
+
+    }
+
+    //get selected checklist name
+    public function getChecklist($checklistID)
+    {
+
+        DB::enableQueryLog();
+
+        $query = DB::table('tbl_checklist_item as tci');
+        $query->where('tci.id','LIKE', '%'. $checklistID . '%');
+        $query->select('tci.*');
+        $result = $query->first();
+
+//        $query = DB::getQueryLog();
+//        echo '<pre>';print_r($query);die;
+        return $result;
+
+    }
+
+
+    public function getPartDetails($partId)
+    {
+
+        $query = DB::table('tbl_equipment_model_spares as tems');
+        $query->join('tbl_spare_mode as tsm', 'tsm.id', '=', 'tems.mode_id');
+        $query->select('tems.*', 'tsm.mode_name');
+        $query->where('tems.id','=',$partId);
+        $result = $query->first();
+        return $result;
+
+    }
+
+
+    public function customerOrders($id)
+    {
+
+
+//        DB::enableQueryLog();
+
+        $query = DB::table('tbl_customer_orders as CO');
+        $query->join('tbl_customer as c', 'c.id', '=', 'CO.customer_id');
+        $query->join('tbl_customer_setups as s', 's.customer_id', '=', 'CO.customer_id', 'left');
+        $query->join('tbl_pay_method as p', 'p.id', '=', 's.pay_method', 'left');
+        $query->where('CO.id', $id);
+        $result = $query->first();
+        //print_r(DB::getQueryLog());die;
+        return $result;
+    }
+
+
+
+}
+
+    
+   
+
+
+
+

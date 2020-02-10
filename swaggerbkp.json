@@ -1,0 +1,647 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Novamed API",
+    "description": "Novamed  REST API",
+    "termsOfService": "http://localhost/novamed",
+    "version": "0.1"
+  },
+  "host": "localhost/novamed/public/api",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/role": {
+      "post": {
+        "tags": [
+          "Role and Permission"
+        ],
+        "summary": "role",
+        "operationId": "role",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/role"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/permission": {
+      "post": {
+        "tags": [
+          "Role and Permission"
+        ],
+        "summary": "Permission",
+        "operationId": "permission",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/role"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/assign-role": {
+      "post": {
+        "tags": [
+          "Role and Permission"
+        ],
+        "summary": "Assign role",
+        "operationId": "assignRole",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/assignRole"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/attach-permission": {
+      "post": {
+        "tags": [
+          "Role and Permission"
+        ],
+        "summary": "Attach permission",
+        "operationId": "attachPermission",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Provide username: emailId/phoneNo.\r\nRole id you can take from role list api.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/attachPermission"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User login",
+        "description": "User login",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SuccessOTP"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorOTP"
+            }
+          }
+        }
+      }
+    },
+    "/equipment/allEquipments": {
+      "post": {
+        "tags": [
+          "Equipments"
+        ],
+        "summary": "All Equipments",
+        "description": "All Equipments",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/allEquipments"
+            }
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "apiKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Profile",
+        "description": "Profile",
+        "operationId": "Profile",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "apiKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SuccessOTP"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorOTP"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Check Role"
+        ],
+        "summary": "Check Role",
+        "description": "Check Role",
+        "operationId": "Check Role",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body"
+          },
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "apiKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "title": "User",
+      "required": [
+        "name",
+        "email",
+        "password"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "allEquipments": {
+      "title": "All equipments",
+      "properties": {
+        "limit": {
+          "type": "integer"
+        },
+        "offset": {
+          "type": "integer"
+        },
+        "keyword": {
+          "type": "string"
+        }
+      }
+    },
+    "role": {
+      "title": "role",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "assignRole": {
+      "title": "Assign role",
+      "required": [
+        "email",
+        "role"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "attachPermission": {
+      "title": "Attach permission",
+      "required": [
+        "role",
+        "name"
+      ],
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Success": {
+      "title": "Success",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "OTP": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "example": "1"
+        }
+      }
+    },
+    "Successgetuser": {
+      "title": "Successgetuser",
+      "required": [
+        "uuid",
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "1"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Error": {
+      "title": "Error",
+      "required": [
+        "status",
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "0"
+        },
+        "message": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "login": {
+      "title": "User",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "regenerateOTP": {
+      "title": "User",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "activation": {
+      "title": "User",
+      "required": [
+        "otp",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "otp": {
+          "type": "string"
+        }
+      }
+    },
+    "posttrip": {
+      "title": "posttrip",
+      "required": [
+        "txtsource",
+        "txtdestination",
+        "vechicletype",
+        "jquerytagboxtext",
+        "source_ids",
+        "destination_ids",
+        "route_lanlat",
+        "return",
+        "routes",
+        "fhh",
+        "fmm",
+        "fzone",
+        "frequency_ids",
+        "avail_seats",
+        "comments",
+        "rpt_from_date",
+        "passenger_type",
+        "number"
+      ],
+      "properties": {
+        "txtsource": {
+          "type": "string"
+        },
+        "txtdestination": {
+          "type": "string"
+        },
+        "vechicletype": {
+          "type": "string"
+        },
+        "jquerytagboxtext": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "string"
+        },
+        "destination_ids": {
+          "type": "string"
+        },
+        "route_lanlat": {
+          "type": "string"
+        },
+        "return": {
+          "type": "string"
+        },
+        "routes": {
+          "type": "string"
+        },
+        "fhh": {
+          "type": "string"
+        },
+        "fmm": {
+          "type": "string"
+        },
+        "fzone": {
+          "type": "string"
+        },
+        "thh": {
+          "type": "string"
+        },
+        "tmm": {
+          "type": "string"
+        },
+        "tzone": {
+          "type": "string"
+        },
+        "frequency_ids": {
+          "type": "string"
+        },
+        "avail_seats": {
+          "type": "string"
+        },
+        "comments": {
+          "type": "string"
+        },
+        "rpt_from_date": {
+          "type": "string"
+        },
+        "passenger_type": {
+          "type": "string"
+        },
+        "number": {
+          "type": "string"
+        }
+      }
+    },
+    "findtrip": {
+      "title": "findtrip",
+      "required": [
+        "source",
+        "destination",
+        "formlatlng",
+        "tolatlng",
+        "journey_date"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "formlatlng": {
+          "type": "string"
+        },
+        "tolatlng": {
+          "type": "string"
+        },
+        "journey_date": {
+          "type": "string"
+        }
+      }
+    },
+    "tripdetail": {
+      "title": "User",
+      "required": [
+        "trip_id"
+      ],
+      "properties": {
+        "trip_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "SuccessOTP": {
+      "title": "Success",
+      "required": [
+        "uuid",
+        "status"
+      ],
+      "properties": {
+        "OTP": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "example": "1"
+        }
+      }
+    },
+    "ErrorOTP": {
+      "title": "Error",
+      "required": [
+        "status",
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "0"
+        },
+        "message": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "User API",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ]
+}

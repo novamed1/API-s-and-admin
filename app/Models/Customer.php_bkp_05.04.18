@@ -1,0 +1,233 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException as QueryException;
+use DB;
+use Input;
+use Carbon\Carbon;
+use DateTime;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+
+class Customer extends Model
+{
+    protected $table = 'tbl_equipment_model';
+
+
+    public function AllCustomer($limit = 0, $offset = 0, $order_by = 'c.id', $direction = 'ASC', $cond = array(), $count = false, $likeArray = '', $dateField = '', $filter = array())
+    {
+        $query = DB::table('tbl_customer as c');
+
+//        print_r($cond);die;
+        $query->orderBy($order_by, $direction);
+
+        if ($limit > 0) {
+            $query->limit($limit);
+            $query->offset($offset);
+        }
+
+
+        if (isset($cond['search']) && $cond['search'] != '') {
+
+            if (isset($likeArray) && $likeArray != '') {
+                $likeArrayFields = $likeArray;
+            } else {
+                $likeArrayFields = array('');
+            }
+
+
+            if (!empty($likeArray)) {
+
+                $flag = true;
+                $like = '';
+                foreach ($likeArray as $value) {
+                    if ($flag) {
+
+                        $like .= $value . " LIKE '%" . trim($cond['search']['keyword']) . "%' ";
+                    } else {
+                        $like .= " OR " . $value . " LIKE '%" . trim($cond['search']['keyword']) . "%' ";
+                    }
+                    $flag = false;
+                }
+                $query->whereRaw('(' . $like . ')');
+            }
+        }
+
+        if (isset($cond['customerId']) && $cond['customerId'] != '') {
+            $query->where('c.id', '=', $cond['customerId']);
+        }
+
+
+        if (isset($cond['select']) && $cond['select'] != '') {
+            $query->select($cond['select']);
+        } else {
+            $query->select('*');
+        }
+        $query->join('tbl_customer_type as t', 't.id', '=', 'c.customer_type_id');
+
+        if (!$count) {
+            $result = $query->get();
+        } else {
+            $result = $query->count();
+        }
+//          $query = DB::getQueryLog();
+//        print_r($query);
+//        die;
+
+
+//
+        return $result;
+    }
+
+    public function saveUserGroup($input)
+    {
+        $userId = Sentinel::getUser()->id;
+        if ($input['id']) {
+            $input['modified_date'] = Carbon::now()->toDateTimeString();
+            $input['modified_by'] = $userId;
+            $result = DB::table('tbl_group_user')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_date'] = Carbon::now()->toDateTimeString();
+            $input['created_by'] = $userId;
+
+            $result = DB::table('tbl_group_user')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function saveUser($input)
+    {
+        if ($input['id']) {
+            $input['modified_date'] = Carbon::now()->toDateTimeString();
+            $input['modified_by'] = $input['customer_id'];
+            $result = DB::table('tbl_users')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_date'] = Carbon::now()->toDateTimeString();
+            $input['created_by'] = $input['customer_id'];
+
+            $result = DB::table('tbl_users')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function saveCustomer($input)
+    {
+        $userId = Sentinel::getUser()->id;
+        if ($input['id']) {
+            $input['modified_date'] = Carbon::now()->toDateTimeString();
+            $input['modified_by'] = $userId;
+            $result = DB::table('tbl_customer')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_date'] = Carbon::now()->toDateTimeString();
+            $input['created_by'] = $userId;
+
+            $result = DB::table('tbl_customer')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function saveContact($input)
+    {
+        $userId = Sentinel::getUser()->id;
+        if ($input['id']) {
+            $input['modified_date'] = Carbon::now()->toDateTimeString();
+            $input['modified_by'] = $userId;
+            $result = DB::table('tbl_customer_contacts')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+            $input['created_date'] = Carbon::now()->toDateTimeString();
+            $input['created_by'] = $userId;
+
+            $result = DB::table('tbl_customer_contacts')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function saveBilling($input)
+    {
+        if ($input['id']) {
+
+            $result = DB::table('tbl_customer_billing_address')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+
+            $result = DB::table('tbl_customer_billing_address')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function saveShipping($input)
+    {
+        if ($input['id']) {
+
+            $result = DB::table('tbl_customer_shipping_address')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+
+            $result = DB::table('tbl_customer_shipping_address')->insertGetId($input);
+            return $result;
+        }
+    }
+
+    public function getLimitTolerences($modelId)
+    {
+        $query = DB::table('tbl_limit_tolerance')->where('model_id', $modelId)->get();
+        return $query;
+    }
+
+    public function getTestTolerences($id)
+    {
+        $query = DB::table('tbl_test_tolerance')->where('test_plan_id', $id)->get();
+        return $query;
+    }
+    public function getCustomer($id, $select = false)
+    {
+        if ($select) {
+            $query = DB::table('tbl_customer as tc')->where('tc.id', '=', $id)
+                ->join('tbl_customer_type as tct', 'tct.id', '=', 'tc.customer_type_id')->
+                select('tc.id', 'tc.customer_name', 'tct.name', 'tc.customer_type_id', 'tc.customer_email',
+                    'tc.customer_main_telephone', 'tc.address1', 'tc.state', 'tc.city', 'tc.customer_email')->first();
+            return $query;
+        } else {
+            $query = DB::table('tbl_customer')->where('id', '=', $id)->select('*')->first();
+            return $query;
+        }
+
+    }
+    public function getCustomerBilling($customerId){
+
+        $query = DB::table('tbl_customer_billing_address')->where('customer_id','=',$customerId)->select('*')->first();
+        return $query;
+    }
+
+    public function getCustomerShipping($customerId){
+
+        $query = DB::table('tbl_customer_shipping_address')->where('customer_id','=',$customerId)->select('*')->first();
+        return $query;
+    }
+
+    public function saveCustomerSetup($input)
+    {
+
+        if ($input['id']) {
+
+            $result = DB::table('tbl_customer_setups')->where('id', $input['id'])->update($input);
+            return $input['id'];
+        } else {
+//            print_r('hi');die;
+
+            $result = DB::table('tbl_customer_setups')->insertGetId($input);
+
+            return $result;
+        }
+    }
+
+
+}
+
+
+
